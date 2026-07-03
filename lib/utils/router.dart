@@ -38,7 +38,7 @@ GoRouter router = GoRouter(
           builder: (context, state, navigationShell) => AppShell(
             navigationShell: navigationShell,
           ),
-          navigatorContainerBuilder: (cohttps://github.com/EchoMusicApp/Echo-Music-Desktop.gitntext, navigationShell, children) =>
+          navigatorContainerBuilder: (context, navigationShell, children) =>
               MyPageView(
             currentIndex: navigationShell.currentIndex,
             children: children,
