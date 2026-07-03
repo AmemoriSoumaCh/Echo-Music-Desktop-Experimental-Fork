@@ -57,6 +57,7 @@ class AppearancePage extends StatelessWidget {
                       ),
                     ),
 
+                    /*
                     /// Accent color
                     SettingTile(
                       title: "AccentColor",
@@ -105,7 +106,7 @@ class AppearancePage extends StatelessWidget {
                       onChanged: (value) {
                         context.read<AppearanceCubit>().setDynamicColors(value);
                       },
-                    ),
+                    ), */
                   ],
                 );
               },

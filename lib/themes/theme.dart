@@ -11,7 +11,7 @@ class AppTheme {
           );
 
     return ThemeData.light(useMaterial3: true).copyWith(
-      scaffoldBackgroundColor: Colors.transparent,
+      scaffoldBackgroundColor: Colors.white,
       textTheme: appTextTheme(ThemeData.light().textTheme),
       colorScheme: colorScheme,
       visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -54,7 +54,7 @@ class AppTheme {
       onError: Colors.white,
     );
     return ThemeData.dark(useMaterial3: true).copyWith(
-      scaffoldBackgroundColor: Colors.transparent,
+      scaffoldBackgroundColor: Colors.black,
       textTheme: appTextTheme(ThemeData.dark().textTheme),
       colorScheme: colorScheme,
       visualDensity: VisualDensity.adaptivePlatformDensity,

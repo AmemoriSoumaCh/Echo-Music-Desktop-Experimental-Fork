@@ -50,9 +50,14 @@ class SettingsPage extends StatelessWidget {
                     GroupTitle(title: "General"),
 
                     SettingTile(
+                      title: "Appearance",
+                      leading: const Icon(Icons.palette),
+                      isFirst: true,
+                      onTap: () => context.go('/settings/appearance'),
+                    ),
+                    SettingTile(
                       title: "Player",
                       leading: const Icon(Icons.play_arrow_rounded),
-                      isFirst: true,
                       isLast: true,
                       onTap: () => context.go('/settings/player'),
                     ),

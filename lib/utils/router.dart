@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:Echo/screens/settings/appearance/appearance_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 import 'package:Echo/screens/browse/browse_page.dart';
@@ -37,7 +38,7 @@ GoRouter router = GoRouter(
           builder: (context, state, navigationShell) => AppShell(
             navigationShell: navigationShell,
           ),
-          navigatorContainerBuilder: (context, navigationShell, children) =>
+          navigatorContainerBuilder: (cohttps://github.com/EchoMusicApp/Echo-Music-Desktop.gitntext, navigationShell, children) =>
               MyPageView(
             currentIndex: navigationShell.currentIndex,
             children: children,
@@ -171,6 +172,10 @@ List<StatefulShellBranch> branches = [
         builder: (context, state) => const SettingsPage(),
         routes: [
 
+          GoRoute(
+            path: 'appearance',
+            builder: (context, state) => const AppearancePage(),
+          ),
           GoRoute(
               path: 'player',
               builder: (context, state) => const PlayerSettingsPage(),

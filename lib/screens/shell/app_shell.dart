@@ -42,7 +42,6 @@ class _AppShellState extends State<AppShell> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
           Row(
@@ -50,29 +49,28 @@ class _AppShellState extends State<AppShell> {
               if (screenWidth >= 450)
                 NavigationRail(
                   extended: true,
-                  backgroundColor: Colors.transparent,
                   groupAlignment: 0.0,
                   destinations: [
                     NavigationRailDestination(
                       selectedIcon:
-                          const Icon(CupertinoIcons.music_house_fill, color: Colors.black),
+                          const Icon(CupertinoIcons.music_house_fill,),
                       icon: const Icon(CupertinoIcons.music_house),
                       label: Text(S.of(context).Home),
                     ),
                     NavigationRailDestination(
                       selectedIcon:
-                          const Icon(CupertinoIcons.search, color: Colors.black),
+                          const Icon(CupertinoIcons.search,),
                       icon: const Icon(CupertinoIcons.search),
                       label: Text(S.of(context).Search_Echo),
                     ),
                     NavigationRailDestination(
                         selectedIcon:
-                            const Icon(Icons.library_music_outlined, color: Colors.black),
+                            const Icon(Icons.library_music_outlined,),
                         icon: const Icon(Icons.library_music_outlined),
                         label: Text(S.of(context).Saved)),
                     NavigationRailDestination(
                       selectedIcon:
-                          const Icon(CupertinoIcons.gear_alt_fill, color: Colors.black),
+                          const Icon(CupertinoIcons.gear_alt_fill,),
                       icon: const Icon(CupertinoIcons.gear_alt),
                       label: Text(S.of(context).Settings),
                     )
