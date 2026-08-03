@@ -1,3 +1,4 @@
+import 'package:Echo/services/settings_manager.dart';
 import 'package:Echo/themes/colors.dart';
 import 'package:Echo/themes/dark.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../generated/l10n.dart';
 import '../widgets/setting_item.dart';
 import '../../../utils/adaptive_widgets/adaptive_widgets.dart';
+import '../../../utils/bottom_modals.dart';
 import 'cubit/appearance_cubit.dart';
 
 class AppearancePage extends StatelessWidget {
@@ -32,7 +34,7 @@ class AppearancePage extends StatelessWidget {
                     vertical: 8,
                   ),
                   children: [
-                    GroupTitle(title: "General Theme"),
+                    GroupTitle(title: "Theme"),
 
                     /// Theme mode
                     SettingTile(
@@ -57,6 +59,32 @@ class AppearancePage extends StatelessWidget {
                         },
                       ),
                     ),
+
+                    /*
+                    /// Accent color
+                    SettingTile(
+                      title: "AccentColor",
+                      leading: const Icon(Icons.colorize_rounded),
+                      trailing: CircleAvatar(
+                        radius: 20,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Row(
+                            children: [
+                              Container(
+                                color: s.accentColor ?? Colors.black,
+                                width: 20,
+                              ),
+                              Container(
+                                color: s.accentColor ?? Colors.white,
+                                width: 20,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      onTap: () => Modals.showAccentSelector(context),
+                    ),*/
 
                     /// AMOLED
                     SettingSwitchTile(
@@ -93,30 +121,6 @@ class AppearancePage extends StatelessWidget {
                         context.read<AppearanceCubit>().setDynamicColors(value);
                       },
                     ),
-
-                    /*
-                    /// Accent color
-                    SettingTile(
-                      title: "Accent Color",
-                      isLast: true,
-                      leading: const Icon(Icons.colorize_rounded),
-                      trailing: CircleAvatar(
-                        radius: 20,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: Row(
-                            children: [
-                              Container(
-                                color: s.accentColor ?? Colors.black,
-                                width: 40,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      onTap: () => Modals.showAccentSelector(context),
-                    ),
-                    */
                   ],
                 );
               },
