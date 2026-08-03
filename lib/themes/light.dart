@@ -1,45 +1,16 @@
-import 'package:Echo/themes/typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 final defaultFontStyle = GoogleFonts.poppins();
 
-ThemeData lightTheme() {
-  final colorScheme = ColorScheme(
-    brightness: Brightness.light,
-    primary: Colors.black,
-    onPrimary: Colors.white,
-    secondary: Color.fromARGB(255, 50, 50, 50),
-    onSecondary: Colors.white,
-    tertiary: Colors.grey,
-    onTertiary: Colors.black,
-    error: Colors.red,
-    onError: Colors.white,
-    surface: Colors.white,
-    onSurface: Colors.black,
-    surfaceContainer: Color.fromARGB(255, 230, 230, 230),
-    surfaceContainerLowest: Color.fromARGB(255, 245, 245, 245),
-    surfaceContainerLow: Color.fromARGB(255, 235, 235, 235),
-    surfaceContainerHigh: Color.fromARGB(255, 220, 220, 220),
-    surfaceContainerHighest: Color.fromARGB(255, 205, 205, 205),
-    inverseSurface: Colors.black,
-    onInverseSurface: Colors.white,
-    inversePrimary: Colors.white,
-    primaryContainer: Color.fromARGB(255, 25, 25, 25),
-    onPrimaryContainer:Colors.white,
-    secondaryContainer: Color.fromARGB(255, 100, 100, 100),
-    onSecondaryContainer: Colors.white,
-    tertiaryContainer: Color.fromARGB(255, 152, 152, 152),
-    onTertiaryContainer: Colors.black,
-  );
-
-  return ThemeData.from(colorScheme: colorScheme, textTheme: appTextTheme()
-  ).copyWith(
+ThemeData lightTheme({required ColorScheme colorScheme}) {
+  return ThemeData.light().copyWith(
+    colorScheme: colorScheme,
+    primaryColor: colorScheme.primary,
     scaffoldBackgroundColor: colorScheme.surface,
-    visualDensity: VisualDensity.adaptivePlatformDensity,
     appBarTheme: AppBarTheme(
-      backgroundColor: colorScheme.surface,
+      backgroundColor: Colors.transparent,
       centerTitle: true,
       systemOverlayStyle: const SystemUiOverlayStyle(
         statusBarBrightness: Brightness.light,
@@ -48,24 +19,22 @@ ThemeData lightTheme() {
         systemNavigationBarColor: Colors.transparent,
       ),
     ),
-    navigationRailTheme: NavigationRailThemeData(
-      backgroundColor: colorScheme.surfaceContainer,
-      unselectedIconTheme: IconThemeData(color: colorScheme.primary),
-      selectedIconTheme: IconThemeData(color: colorScheme.onSecondary),
-      indicatorColor: colorScheme.secondary,
-      labelType: NavigationRailLabelType.all,
-      selectedLabelTextStyle: TextStyle(color: colorScheme.onSurface, fontSize: 11),
-      unselectedLabelTextStyle:
-      TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.6), fontSize: 11),
-    ),
-    navigationBarTheme: NavigationBarThemeData(
-      backgroundColor: colorScheme.surfaceContainer,
-    ),
-    pageTransitionsTheme: PageTransitionsTheme(
-      builders: Map<TargetPlatform, PageTransitionsBuilder>.fromIterable(
-        TargetPlatform.values,
-        value: (_) => const FadeForwardsPageTransitionsBuilder(),
-      ),
+    textTheme: TextTheme(
+      headlineLarge: defaultFontStyle.copyWith(color: Colors.black),
+      headlineMedium: defaultFontStyle.copyWith(color: Colors.black),
+      headlineSmall: defaultFontStyle.copyWith(color: Colors.black),
+      bodyLarge: defaultFontStyle.copyWith(color: Colors.black),
+      bodyMedium: defaultFontStyle.copyWith(color: Colors.black),
+      bodySmall: defaultFontStyle.copyWith(color: Colors.black),
+      displayLarge: defaultFontStyle.copyWith(color: Colors.black),
+      displayMedium: defaultFontStyle.copyWith(color: Colors.black),
+      displaySmall: defaultFontStyle.copyWith(color: Colors.black),
+      titleLarge: defaultFontStyle.copyWith(color: Colors.black),
+      titleMedium: defaultFontStyle.copyWith(color: Colors.black),
+      titleSmall: defaultFontStyle.copyWith(color: Colors.black),
+      labelLarge: defaultFontStyle.copyWith(color: Colors.black),
+      labelMedium: defaultFontStyle.copyWith(color: Colors.black),
+      labelSmall: defaultFontStyle.copyWith(color: Colors.black),
     ),
   );
 }

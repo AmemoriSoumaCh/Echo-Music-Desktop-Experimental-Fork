@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
-import 'package:Echo/themes/typography.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:duration_picker/duration_picker.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,7 +11,6 @@ import 'package:go_router/go_router.dart';
 import 'package:Echo/screens/settings/player/equalizer/equalizer_page.dart';
 import 'package:Echo/utils/playlist_thumbnail.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -32,7 +30,7 @@ import 'format_duration.dart';
 import '../utils/extensions.dart';
 
 class Modals {
-  static Future<T?> showWindow<T>({
+  static Future<T?> showGlassWindow<T>({
     required BuildContext context,
     required Widget child,
   }) {
@@ -57,14 +55,13 @@ class Modals {
   }
 
   static Future showTimerModal(BuildContext context) {
-    return showWindow(
+    return showGlassWindow(
       context: context,
-      child: _Window(
+      child: const _GlassWindow(
         title: "Sleep Timer",
         width: 400,
         height: 500,
         child: _TimerWindowContent(),
-        isGlass: SettingsManager().frostedGlass,
       ),
     );
   }
@@ -124,14 +121,13 @@ class Modals {
   }
 
   static void showSongBottomModal(BuildContext context, Map song) {
-    showWindow(
+    showGlassWindow(
       context: context,
-      child: _Window(
+      child: _GlassWindow(
         title: "Song Options",
         width: 400,
         height: 600,
         child: _SongWindowContent(song: song),
-        isGlass: SettingsManager().frostedGlass,
       ),
     );
   }
@@ -161,32 +157,24 @@ class Modals {
       barrierLabel: 'Dismiss',
       transitionDuration: const Duration(milliseconds: 150),
       pageBuilder: (context, animation, secondaryAnimation) {
-
-        return SettingsManager().frostedGlass ? _PopupWindow(
+        return _AppleMusicStylePopup(
           song: song,
           animation: animation,
           buttonPosition: position,
           buttonSize: size,
-        ):_Window(
-          title: "Player Options",
-          width: 400,
-          height: 600,
-          child: _PlayerOptionsWindowContent(song: song),
-          isGlass: false,
         );
       },
     );
   }
 
   static void showPlaylistBottomModal(BuildContext context, Map playlist) {
-    showWindow(
+    showGlassWindow(
       context: context,
-      child: _Window(
+      child: _GlassWindow(
         title: "Playlist Options",
         width: 400,
         height: 600,
         child: _PlaylistWindowContent(playlist: playlist),
-        isGlass: SettingsManager().frostedGlass,
       ),
     );
   }
@@ -216,40 +204,37 @@ class Modals {
 
   static Future showArtistsBottomModal(BuildContext context, List artists,
       {String? leading, bool shouldPop = false}) {
-    return showWindow(
+    return showGlassWindow(
       context: context,
-      child: _Window(
+      child: _GlassWindow(
         title: S.of(context).Artists,
         width: 400,
         height: 500,
         child: _ArtistsWindowContent(artists: artists, leading: leading),
-        isGlass: SettingsManager().frostedGlass,
       ),
     );
   }
 
   static void showCreateplaylistModal(BuildContext context, {Map? item}) {
-    showWindow(
+    showGlassWindow(
       context: context,
-      child: _Window(
+      child: _GlassWindow(
         title: S.of(context).Create_Playlist,
         width: 400,
         height: 300,
         child: _CreatePlaylistWindowContent(item: item),
-        isGlass: SettingsManager().frostedGlass,
       ),
     );
   }
 
   static void showImportplaylistModal(BuildContext context, {Map? item}) {
-     showWindow(
+     showGlassWindow(
       context: context,
-      child: _Window(
+      child: _GlassWindow(
         title: S.of(context).Import_Playlist,
         width: 400,
         height: 300,
         child: _ImportPlaylistWindowContent(),
-        isGlass: SettingsManager().frostedGlass,
       ),
     );
   }
@@ -268,14 +253,13 @@ class Modals {
   }
 
   static void addToPlaylist(BuildContext context, Map item) {
-    showWindow(
+    showGlassWindow(
       context: context,
-      child: _Window(
+      child: _GlassWindow(
         title: S.of(context).Add_To_Playlist,
         width: 400,
         height: 600,
         child: _AddToPlaylistContent(item: item),
-        isGlass: SettingsManager().frostedGlass,
       ),
     );
   }
@@ -324,7 +308,7 @@ BottomModalLayout _confirmBottomModal(
     title: Center(
       child: Text(
         S.of(context).Confirm,
-        style: bigTextStyle(),
+        style: bigTextStyle(context),
       ),
     ),
     actions: [
@@ -372,7 +356,7 @@ BottomModalLayout _playlistRenameBottomModal(BuildContext context,
       title: Center(
         child: Text(
           S.of(context).Rename_Playlist,
-          style: mediumTextStyle(),
+          style: mediumTextStyle(context),
         ),
       ),
       actions: [
@@ -423,7 +407,7 @@ BottomModalLayout _artistsBottomModal(
       title: Center(
         child: Text(
           S.of(context).Artists,
-          style: mediumTextStyle(),
+          style: mediumTextStyle(context),
         ),
       ),
       child: SingleChildScrollView(
@@ -471,7 +455,7 @@ Widget _createPlaylistModal(
     title: Center(
         child: Text(
       S.of(context).Create_Playlist,
-      style: mediumTextStyle(),
+      style: mediumTextStyle(context),
     )),
     actions: [
       AdaptiveButton(
@@ -527,7 +511,7 @@ Widget _importPlaylistModal(BuildContext context) {
     title: Center(
       child: Text(
         S.of(context).Import_Playlist,
-        style: mediumTextStyle(),
+        style: mediumTextStyle(context),
       ),
     ),
     actions: [
@@ -593,7 +577,7 @@ BottomModalLayout _addToPlaylist(BuildContext context, Map item) {
       contentPadding: EdgeInsets.zero,
       title: Text(
         S.of(context).Add_To_Playlist,
-        style: mediumTextStyle(),
+        style: mediumTextStyle(context),
       ),
       trailing: AdaptiveIconButton(
           onPressed: () {
@@ -746,7 +730,7 @@ BottomModalLayout _textFieldBottomModal(BuildContext context,
         ? Center(
             child: Text(
               title,
-              style: mediumTextStyle(),
+              style: mediumTextStyle(context),
             ),
           )
         : null,
@@ -783,14 +767,14 @@ BottomModalLayout _textFieldBottomModal(BuildContext context,
   );
 }
 
-//Popup Menu
-class _PopupWindow extends StatelessWidget {
+// Apple Music Style Popup Menu
+class _AppleMusicStylePopup extends StatelessWidget {
   final Map song;
   final Animation<double> animation;
   final Offset buttonPosition;
   final Size buttonSize;
 
-  const _PopupWindow({
+  const _AppleMusicStylePopup({
     required this.song,
     required this.animation,
     required this.buttonPosition,
@@ -804,21 +788,21 @@ class _PopupWindow extends StatelessWidget {
     VoidCallback? onTap,
     Widget? trailing,
   }) {
-    bool isFrostedGlass = SettingsManager().frostedGlass;
     return InkWell(
       onTap: onTap,
-      hoverColor: AppColors.window(context).withValues(alpha: isFrostedGlass?0.4:0),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
         child: Row(
           children: [
-            Icon(icon, size: 15, color: AppColors.onWindow(context)),
+            Icon(icon, size: 15, color: Colors.white.withValues(alpha: 0.8)),
             const SizedBox(width: 10),
             Expanded(
               child: Text(
                 title,
-                style: appTextTheme().labelLarge?.copyWith(
-                  color: AppColors.onWindow(context),
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white,
                 ),
               ),
             ),
@@ -846,7 +830,6 @@ class _PopupWindow extends StatelessWidget {
         ? (screenWidth - buttonPosition.dx - buttonSize.width)
             .clamp(16, screenWidth - 216)
         : 16;
-    bool isFrostedGlass = SettingsManager().frostedGlass;
 
     return Stack(
       children: [
@@ -865,17 +848,17 @@ class _PopupWindow extends StatelessWidget {
                 child: Container(
                   width: 200,
                   decoration: BoxDecoration(
-                    color: AppColors.window(context).withValues(alpha: isFrostedGlass?0.1:1),
+                    color: Colors.white.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: AppColors.window(context).withValues(alpha: isFrostedGlass?0.15:0),
+                      color: Colors.white.withValues(alpha: 0.15),
                       width: 0.5,
                     ),
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: isFrostedGlass?60:0, sigmaY: isFrostedGlass?60:0),
+                      filter: ImageFilter.blur(sigmaX: 60, sigmaY: 60),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -1008,17 +991,15 @@ BottomModalLayout _playerOptionsModal(BuildContext context, Map song) {
   return BottomModalLayout(
     // NEW HEADER
     title: AdaptiveListTile(
-      contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+      contentPadding: EdgeInsets.zero,
       title: Text(song['title'] ?? 'Unknown Title',
-          maxLines: 1, overflow: TextOverflow.ellipsis,
-          style: TextStyle(color: AppColors.onWindow(context)),),
+          maxLines: 1, overflow: TextOverflow.ellipsis),
       subtitle: Text(
           song['artist'] ??
               song['artists']?.map((e) => e['name']).join(', ') ??
               'Unknown Artist',
           maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(color: AppColors.onWindow(context)),),
+          overflow: TextOverflow.ellipsis),
       leading: ClipRRect(
         borderRadius: BorderRadius.circular(8),
         child: CachedNetworkImage(
@@ -1032,7 +1013,7 @@ BottomModalLayout _playerOptionsModal(BuildContext context, Map song) {
     ),
     child: SingleChildScrollView(
       child: Column(
-        mainAxisSize: MainAxisSize.max,
+        mainAxisSize: MainAxisSize.min,
         children: [
           const Divider(height: 24, thickness: 0.5), // Visual separation
 
@@ -1121,7 +1102,7 @@ BottomModalLayout _playerOptionsModal(BuildContext context, Map song) {
             },
           ),
 
-          if(Platform.isAndroid)
+          if (Platform.isAndroid)
             AdaptiveListTile(
               dense: true,
               title: Text(S.of(context).Equalizer),
@@ -1190,7 +1171,7 @@ BottomModalLayout _showSelection(
     title: Center(
       child: Text(
         "Select",
-        style: mediumTextStyle(),
+        style: mediumTextStyle(context),
       ),
     ),
     child: SingleChildScrollView(
@@ -1710,7 +1691,7 @@ BottomModalLayout _accentSelector(BuildContext context) {
   Color? accentColor = GetIt.I<SettingsManager>().accentColor;
   return BottomModalLayout(
     title: Center(
-      child: Text('Select Color', style: mediumTextStyle()),
+      child: Text('Select Color', style: mediumTextStyle(context)),
     ),
     actions: [
       AdaptiveButton(
@@ -1760,13 +1741,10 @@ class BottomModalLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width * 0.3,
-      height: MediaQuery.of(context).size.width * 0.6,
-      constraints: BoxConstraints(
-        maxWidth: MediaQuery.of(context).size.width * 0.5,
-        maxHeight: MediaQuery.of(context).size.width * 0.8),
+      width: double.maxFinite,
+      constraints: const BoxConstraints(maxWidth: 600),
       child: Material(
-        color: SettingsManager().frostedGlass ? AppColors.window(context).withValues(alpha: 0.3) : AppColors.window(context),
+        color: Color.fromARGB(245, 32, 32, 32),
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(16),
           topRight: Radius.circular(16),
@@ -1777,7 +1755,7 @@ class BottomModalLayout extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
           child: SafeArea(
             child: Column(
-              mainAxisSize: MainAxisSize.max,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 if (title != null)
                   Padding(
@@ -1790,7 +1768,7 @@ class BottomModalLayout extends StatelessWidget {
                     padding:
                         const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: actions!,
                     ),
                   )
@@ -1811,21 +1789,19 @@ class SelectionItem<T> {
   SelectionItem({required this.title, this.icon, required this.data});
 }
 
-class _Window extends StatelessWidget {
+class _GlassWindow extends StatelessWidget {
   final String title;
   final Widget child;
   final double width;
   final double height;
-  final bool isGlass;
   final VoidCallback? onClose;
 
-  const _Window({
+  const _GlassWindow({
     super.key,
     required this.title,
     required this.child,
     this.width = 500,
     this.height = 600,
-    this.isGlass = false,
     this.onClose,
   });
 
@@ -1842,26 +1818,25 @@ class _Window extends StatelessWidget {
             maxHeight: MediaQuery.of(context).size.height * 0.8,
           ),
           decoration: BoxDecoration(
-            color: isGlass?Colors.transparent:AppColors.window(context),
+            color: const Color(0xFF1E1E1E).withOpacity(0.85),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: AppColors.window(context).withValues(alpha: isGlass?0.5:1),
+              color: Colors.white.withOpacity(0.1),
               width: 1,
             ),
-            /*boxShadow: [
-
+            boxShadow: [
               BoxShadow(
-                color: AppColors.onWindow(context).withValues(alpha: isGlass?0.01:0),
+                color: Colors.black.withOpacity(0.5),
                 blurRadius: 30,
-                spreadRadius: 20,
+                spreadRadius: 10,
                 offset: const Offset(0, 10),
               ),
-            ],*/
+            ],
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
             child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: isGlass?85:0, sigmaY: isGlass?85:0),
+              filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
               child: Column(
                 children: [
                   // Header
@@ -1871,7 +1846,7 @@ class _Window extends StatelessWidget {
                     decoration: BoxDecoration(
                       border: Border(
                         bottom: BorderSide(
-                          color: AppColors.window(context).withValues(alpha: isGlass?0:1),
+                          color: Colors.white.withOpacity(0.1),
                           width: 1,
                         ),
                       ),
@@ -1881,18 +1856,18 @@ class _Window extends StatelessWidget {
                       children: [
                         Text(
                           title,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w600,
                             letterSpacing: 0.5,
-                            color: AppColors.onWindow(context),
+                            color: Colors.white,
                             decoration: TextDecoration.none,
                           ),
                         ),
                         IconButton(
                           onPressed: onClose ?? () => Navigator.of(context).pop(),
-                          icon: Icon(Icons.close, color: AppColors.onWindow(context)),
-                          hoverColor: AppColors.onWindow(context).withValues(alpha: 0.05),
+                          icon: const Icon(Icons.close, color: Colors.white70),
+                          hoverColor: Colors.white.withOpacity(0.1),
                           splashRadius: 20,
                         ),
                       ],
@@ -1958,7 +1933,7 @@ class _AddToPlaylistContent extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                       child: InkWell(
                         borderRadius: BorderRadius.circular(12),
-                        hoverColor: AppColors.onWindow(context).withValues(alpha: 0.05),
+                        hoverColor: Colors.white.withOpacity(0.05),
                         onTap: isAlreadyIn
                             ? null
                             : () async {
@@ -2057,7 +2032,7 @@ class _ArtistsWindowContent extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             child: InkWell(
               borderRadius: BorderRadius.circular(12),
-              hoverColor: AppColors.onWindow(context).withValues(alpha: 0.05),
+              hoverColor: Colors.white.withOpacity(0.05),
               onTap: () {
                 final router = GoRouter.of(context);
                 Navigator.pop(context);
@@ -2077,23 +2052,23 @@ class _ArtistsWindowContent extends StatelessWidget {
                       backgroundImage: leading != null
                           ? CachedNetworkImageProvider(leading!)
                           : null,
-                      backgroundColor: AppColors.thumbnailError(context),
+                      backgroundColor: Colors.grey[900],
                       child: leading == null
-                          ? Icon(Icons.person, color: AppColors.onThumbnailError(context))
+                          ? const Icon(Icons.person, color: Colors.white)
                           : null,
                     ),
                     const SizedBox(width: 16),
                     Text(
                       artist['name'],
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.onWindow(context),
+                        color: Colors.white,
                       ),
                     ),
                     const Spacer(),
                     Icon(Icons.chevron_right,
-                        color: AppColors.onWindow(context).withValues(alpha: 0.3)),
+                        color: Colors.white.withOpacity(0.3)),
                   ],
                 ),
               ),
@@ -2239,7 +2214,7 @@ class _SongWindowContent extends StatelessWidget {
                 height: 60,
                 width: song['type'] == 'VIDEO' ? 100 : 60,
                 fit: BoxFit.cover,
-errorWidget: (context, url, error) => Icon(Icons.music_note, color: AppColors.windowIcon(context)),
+errorWidget: (context, url, error) => const Icon(Icons.music_note),
               ),
             ),
             const SizedBox(width: 16),
@@ -2249,10 +2224,10 @@ errorWidget: (context, url, error) => Icon(Icons.music_note, color: AppColors.wi
                 children: [
                   Text(
                     song['title'],
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.onWindow(context)),
+                        color: Colors.white),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -2260,7 +2235,7 @@ errorWidget: (context, url, error) => Icon(Icons.music_note, color: AppColors.wi
                     Text(
                       song['subtitle'],
                       style: TextStyle(
-                          fontSize: 14, color: AppColors.onWindow(context).withOpacity(0.7)),
+                          fontSize: 14, color: Colors.white.withOpacity(0.7)),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -2270,7 +2245,7 @@ errorWidget: (context, url, error) => Icon(Icons.music_note, color: AppColors.wi
           ],
         ),
         const SizedBox(height: 16),
-        Divider(color: AppColors.onWindow(context)),
+        const Divider(color: Colors.white12),
         const SizedBox(height: 8),
 
         // Actions
@@ -2405,21 +2380,21 @@ errorWidget: (context, url, error) => Icon(Icons.music_note, color: AppColors.wi
         borderRadius: BorderRadius.circular(12),
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
-          hoverColor: AppColors.onWindow(context).withValues(alpha: 0.05),
+          hoverColor: Colors.white.withOpacity(0.05),
           onTap: onTap,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Row(
               children: [
-                Icon(icon, color: AppColors.windowIcon(context), size: 22),
+                Icon(icon, color: Colors.white, size: 22),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Text(
                     title,
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
-                        color: AppColors.onWindow(context)),
+                        color: Colors.white),
                   ),
                 ),
                 if (trailing != null) trailing,
@@ -2458,8 +2433,8 @@ class _PlaylistWindowContent extends StatelessWidget {
                   : Container(
                       height: 60,
                       width: 60,
-                      color: AppColors.window(context),
-                      child: Icon(Icons.music_note, color: AppColors.windowIcon(context)),
+                      color: Colors.grey[900],
+                      child: const Icon(Icons.music_note, color: Colors.white),
                     ),
             ),
             const SizedBox(width: 16),
@@ -2469,10 +2444,10 @@ class _PlaylistWindowContent extends StatelessWidget {
                 children: [
                   Text(
                     playlist['title'],
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.onWindow(context)),
+                        color: Colors.white),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -2480,7 +2455,7 @@ class _PlaylistWindowContent extends StatelessWidget {
                     Text(
                       playlist['subtitle'],
                       style: TextStyle(
-                          fontSize: 14, color: AppColors.onWindow(context).withValues(alpha: 0.9)),
+                          fontSize: 14, color: Colors.white.withOpacity(0.7)),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -2490,7 +2465,7 @@ class _PlaylistWindowContent extends StatelessWidget {
           ],
         ),
          const SizedBox(height: 16),
-        Divider(color: AppColors.onWindow(context)),
+        const Divider(color: Colors.white12),
         const SizedBox(height: 8),
 
         // Actions
@@ -2650,21 +2625,21 @@ class _PlaylistWindowContent extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
-          hoverColor: AppColors.onWindow(context).withValues(alpha: 0.05),
+          hoverColor: Colors.white.withOpacity(0.05),
           onTap: onTap,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Row(
               children: [
-                Icon(icon, color: AppColors.windowIcon(context), size: 22),
+                Icon(icon, color: Colors.white, size: 22),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Text(
                     title,
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
-                        color: AppColors.onWindow(context)),
+                        color: Colors.white),
                   ),
                 ),
                 if (trailing != null) trailing,
@@ -2673,224 +2648,6 @@ class _PlaylistWindowContent extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _PlayerOptionsWindowContent extends StatelessWidget {
-  final Map song;
-  const _PlayerOptionsWindowContent({required this.song});
-
-  @override
-  Widget build(BuildContext context) {
-    AudioPlayer player = GetIt.I<MediaPlayer>().player;
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        // Playlist Info
-        Row(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: (song['thumbnails']?.isNotEmpty == true)
-              ? CachedNetworkImage(
-                imageUrl: song['thumbnails']?.first['url'] ?? '',
-                height: 50,
-                width: 50,
-                fit: BoxFit.cover,
-                errorWidget: (context, url, error) =>
-                const Icon(Icons.music_note),
-              )
-              : Container(
-                height: 50,
-                width: 50,
-                color: AppColors.window(context),
-                child: Icon(Icons.music_note, color: AppColors.windowIcon(context)),
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    song['title'] ?? 'Unknown Title',
-                    maxLines: 1, overflow: TextOverflow.ellipsis,
-                    style: appTextTheme().labelLarge?.copyWith(color: AppColors.onWindow(context))
-                  ),
-                  Text(
-                      song['artist'] ??
-                      song['artists']?.map((e) => e['name']).join(', ') ??
-                      'Unknown Artist',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: appTextTheme().labelMedium?.copyWith(color: AppColors.onWindow(context)),
-                    ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        Divider(color: AppColors.onWindow(context)),
-        const SizedBox(height: 8),
-        SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              const Divider(height: 24, thickness: 0.5), // Visual separation
-
-              // SLIDERS GROUP (Volume/Speed)
-              Column(
-                children: [
-                  StreamBuilder(
-                    stream: GetIt.I<MediaPlayer>().player.volumeStream,
-                    builder: (context, progress) {
-                      return AdaptiveListTile(
-                        dense: true,
-                        leading: Icon(
-                          AdaptiveIcons.volume(
-                            (progress.hasData && progress.data != null)
-                            ? progress.data!
-                            : player.volume),
-                            size: 20,color: AppColors.windowIcon(context),
-                        ),
-                        title: AdaptiveSlider(
-                          label: (((progress.hasData && progress.data != null)
-                          ? progress.data!
-                          : GetIt.I<MediaPlayer>().player.volume) *
-                          100)
-                          .toStringAsFixed(0),
-                          value: (progress.hasData && progress.data != null)
-                          ? progress.data!
-                          : player.volume,
-                          onChanged: (volume) {
-                            player.setVolume(volume);
-                            GetIt.I<SettingsManager>().volumeLevel = volume;
-
-                          },
-                        ),
-                      );
-                    },
-                  ),
-                  StreamBuilder(
-                    stream: GetIt.I<MediaPlayer>().player.speedStream,
-                    builder: (context, progress) {
-                      return AdaptiveListTile(
-                        dense: true,
-                        leading: Icon(Icons.speed, size: 20, color: AppColors.windowIcon(context),),
-                        title: AdaptiveSlider(
-                          max: 2,
-                          min: 0.25,
-                          divisions: 7,
-                          label: ((progress.hasData && progress.data != null)
-                          ? progress.data!
-                          : player.speed)
-                          .toString()+'x',
-                          value: ((progress.hasData && progress.data != null)
-                          ? progress.data!
-                          : player.speed),
-                          onChanged: (speed) {
-                            player.setSpeed(speed);
-                            GetIt.I<SettingsManager>().speedLevel = speed;
-                          },
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
-
-              const Divider(height: 16, thickness: 0.5),
-
-              // PRIMARY ACTIONS
-              // Download Button
-              if (!['DOWNLOADING', 'DOWNLOADED'].contains(song['status']))
-                AdaptiveListTile(
-                  dense: true,
-                  title: Text(S.of(context).Download,style: appTextTheme().labelLarge?.copyWith(color: AppColors.onWindow(context)),),
-                  leading: Icon(AdaptiveIcons.download,color: AppColors.windowIcon(context)),
-                  onTap: () {
-                    Navigator.pop(context);
-                    BottomMessage.showText(context, S.of(context).Download_Started);
-                    GetIt.I<DownloadManager>().downloadSong(song);
-                  },
-                ),
-
-                AdaptiveListTile(
-                  dense: true,
-                  title: Text(S.of(context).Add_To_Playlist,style: appTextTheme().labelLarge?.copyWith(color: AppColors.onWindow(context))),
-                  leading: Icon(AdaptiveIcons.library_add, color: AppColors.windowIcon(context)),
-                  onTap: () {
-                    Navigator.pop(context);
-                    Modals.addToPlaylist(context, song);
-                  },
-                ),
-
-                if(Platform.isAndroid)
-                  AdaptiveListTile(
-                    dense: true,
-                    title: Text(S.of(context).Equalizer, style: appTextTheme().labelLarge?.copyWith(color: AppColors.onWindow(context))),
-                    leading: Icon(AdaptiveIcons.equalizer, color: AppColors.windowIcon(context)),
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const EqualizerPage()));
-                    },
-                    trailing: Icon(Icons.chevron_right),
-                  ),
-
-                  const Divider(height: 16, thickness: 0.5),
-
-                  // SECONDARY LINKS (Artists, Album, Share)
-                  if (song['artists'] != null)
-                    AdaptiveListTile(
-                      dense: true,
-                      title: Text(S.of(context).Artists, style: appTextTheme().labelLarge?.copyWith(color: AppColors.onWindow(context))),
-                      leading: Icon(AdaptiveIcons.people, color: AppColors.windowIcon(context)),
-                      trailing: Icon(AdaptiveIcons.chevron_right, color: AppColors.windowIcon(context)),
-                      onTap: () {
-                        Navigator.pop(context);
-                        Modals.showArtistsBottomModal(
-                          context,
-                          song['artists'],
-                          leading: song['thumbnails'].first['url'],
-                          shouldPop: true,
-                        );
-                      },
-                    ),
-                    if (song['album'] != null)
-                      AdaptiveListTile(
-                        dense: true,
-                        title: Text(S.of(context).Album,
-                        maxLines: 1, overflow: TextOverflow.ellipsis,
-                        style: appTextTheme().labelLarge?.copyWith(color: AppColors.onWindow(context))),
-                        leading: Icon(AdaptiveIcons.album, color: AppColors.windowIcon(context)),
-                        trailing: Icon(Icons.chevron_right, color: AppColors.windowIcon(context)),
-                        onTap: () {
-                          context.go('/browse', extra: {
-                            'endpoint':
-                            song['album']['endpoint'].cast<String, dynamic>(),
-                          });
-                        }),
-
-                        AdaptiveListTile(
-                          dense: true,
-                          title: Text('Share',
-                                style: appTextTheme().labelLarge?.copyWith(color: AppColors.onWindow(context))),
-                          leading: Icon(AdaptiveIcons.share, color: AppColors.windowIcon(context)),
-                          onTap: () {
-                            Navigator.pop(context);
-                            Share.shareUri(
-                              Uri.parse(
-                                'https://music.youtube.com/watch?v=${song['videoId']}'),
-                            );
-                          },
-                        ),
-            ],
-          ),
-        ),
-
-      ],
     );
   }
 }
@@ -2914,20 +2671,15 @@ class _CreatePlaylistWindowContentState
         padding: const EdgeInsets.all(24.0),
         child: Column(
           children: [
-             TextField(
-               onChanged: (value) => title = value,
-               keyboardType: TextInputType.text,
-               style: Theme.of(context).textTheme.titleMedium?.copyWith(color: AppColors.onWindow(context)),
-               decoration: InputDecoration(
-                 fillColor: AppColors.window(context).withValues(alpha: 0.3),
-                 filled: true,
-                 hintText: S.of(context).Playlist_Name,
-                 hintStyle: Theme.of(context).textTheme.titleLarge?.copyWith(color: AppColors.onWindow(context)),
-                 icon: Icon(Icons.title, color: AppColors.onWindow(context)),
-                 contentPadding:
-                 const EdgeInsets.symmetric(vertical: 2, horizontal: 16)
-               ),
-             ),
+             AdaptiveTextField(
+                  onChanged: (value) => title = value,
+                  fillColor: Colors.white.withOpacity(0.1),
+                  hintText: S.of(context).Playlist_Name,
+                  prefix: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    child: Icon(Icons.title, color: Colors.white),
+                  ),
+                ),
             const SizedBox(height: 24),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -2936,11 +2688,11 @@ class _CreatePlaylistWindowContentState
                   onPressed: () {
                      Navigator.pop(context);
                   },
-                  child: Text(S.of(context).Cancel, style: TextStyle(color: AppColors.onWindow(context))),
+                  child: Text(S.of(context).Cancel, style: const TextStyle(color: Colors.white70)),
                 ),
                  const SizedBox(width: 16),
                 AdaptiveFilledButton(
-                  color: AppColors.button(context),
+                  color: Theme.of(context).colorScheme.primary,
                   onPressed: () async {
                     context
                         .read<LibraryService>()
@@ -2952,8 +2704,8 @@ class _CreatePlaylistWindowContentState
                   },
                   child: Text(
                     S.of(context).Create,
-                    style: TextStyle(
-                         color: AppColors.onButton(context), fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                         color: Colors.black, fontWeight: FontWeight.bold),
                   ),
                 )
               ],
@@ -2972,19 +2724,17 @@ class _ImportPlaylistWindowContent extends StatelessWidget {
         padding: const EdgeInsets.all(24.0),
         child: Column(
           children: [
-             TextField(
+             AdaptiveTextField(
                   onChanged: (value) => title = value,
                   keyboardType: TextInputType.url,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(color: AppColors.onWindow(context)),
-                  decoration: InputDecoration(
-                    fillColor: AppColors.window(context).withValues(alpha: 0.3),
-                    filled: true,
-                    hintText: 'Spotify / YouTube / YTM Playlist URL',
-                    hintStyle: Theme.of(context).textTheme.titleLarge?.copyWith(color: AppColors.onWindow(context)),
-                    icon: Icon(Icons.link, color: AppColors.onWindow(context)),
-                    contentPadding:
-                    const EdgeInsets.symmetric(vertical: 2, horizontal: 16)
+                   fillColor: Colors.white.withOpacity(0.1),
+                  hintText: 'Spotify / YouTube / YTM Playlist URL',
+                  prefix: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    child: Icon(Icons.link, color: Colors.white),
                   ),
+                   contentPadding:
+                      const EdgeInsets.symmetric(vertical: 2, horizontal: 16),
                 ),
             const SizedBox(height: 24),
             Row(
@@ -2994,11 +2744,11 @@ class _ImportPlaylistWindowContent extends StatelessWidget {
                   onPressed: () {
                      Navigator.pop(context);
                   },
-                  child: Text(S.of(context).Cancel, style: TextStyle(color: AppColors.onWindow(context))),
+                  child: Text(S.of(context).Cancel, style: const TextStyle(color: Colors.white70)),
                 ),
                  const SizedBox(width: 16),
                 AdaptiveFilledButton(
-                  color: AppColors.button(context),
+                  color: Theme.of(context).colorScheme.primary,
                   onPressed: () async {
                     Navigator.pop(context);
                     final stream = ImportService().import(title);
@@ -3015,8 +2765,8 @@ class _ImportPlaylistWindowContent extends StatelessWidget {
                   },
                   child: Text(
                     S.of(context).Import,
-                    style: TextStyle(
-                        color: AppColors.onButton(context), fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.bold),
                   ),
                 )
               ],

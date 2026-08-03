@@ -7,7 +7,6 @@ import 'package:get_it/get_it.dart';
 import 'package:Echo/themes/theme.dart';
 import 'package:Echo/ytmusic/modals/yt_config.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:just_audio_media_kit/just_audio_media_kit.dart';
 import 'package:path_provider/path_provider.dart';
@@ -91,17 +90,12 @@ void main() async {
       child: const Echo(),
     ),
   );
-  //initialize player speed and volume
-  AudioPlayer player = GetIt.I<MediaPlayer>().player;
-  player.setVolume(SettingsManager().volumeLevel);
-  player.setSpeed(SettingsManager().speedLevel);
 }
 
 class Echo extends StatelessWidget {
   const Echo({super.key});
   @override
   Widget build(BuildContext context) {
-    SettingsManager settingsManager = SettingsManager();
     return Shortcuts(
       shortcuts: <LogicalKeySet, Intent>{
         LogicalKeySet(LogicalKeyboardKey.select): const ActivateIntent(),
@@ -119,13 +113,13 @@ class Echo extends StatelessWidget {
         supportedLocales: S.delegate.supportedLocales,
         debugShowCheckedModeBanner: false,
         themeMode: context.watch<SettingsManager>().themeMode,
-        theme: settingsManager.dynamicColors?
-        AppTheme.dynamic(seedColor: settingsManager.accentColor??Colors.red):
-        AppTheme.light(),
-        darkTheme: settingsManager.dynamicColors?
-        AppTheme.dynamic(seedColor: settingsManager.accentColor??Colors.red, brightness: Brightness.dark, isAmoled: settingsManager.amoledBlack):
-        AppTheme.dark(isAmoled: settingsManager.amoledBlack),
+        theme: AppTheme.light(
+          primary: Colors.black,
         ),
+        darkTheme: AppTheme.dark(
+          primary: Colors.white,
+        ),
+      ),
     );
   }
 }

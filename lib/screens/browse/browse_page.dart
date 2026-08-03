@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:Echo/themes/typography.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
@@ -131,7 +130,7 @@ class _BrowsePageState extends State<_BrowsePage> {
       onInternetRestored: fetchData,
       child: Scaffold(
         appBar: AppBar(
-          title: header['title'] != null ? Text(header['title'],style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface),) : null,
+          title: header['title'] != null ? Text(header['title']) : null,
           centerTitle: true,
         ),
 
@@ -144,7 +143,7 @@ class _BrowsePageState extends State<_BrowsePage> {
                 );
               case BrowseError():
                 return Center(
-                  child: Text(state.message ?? '', style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface)),
+                  child: Text(state.message ?? ''),
                 );
               case BrowseSuccess():
                 return SingleChildScrollView(
@@ -290,7 +289,6 @@ class _HeaderWidgetState extends State<HeaderWidget> {
               child: Text(
                 header['subtitle'] ?? '',
                 maxLines: 2,
-                style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface),
               ),
             ),
           if (header['secondSubtitle'] != null)
@@ -298,7 +296,6 @@ class _HeaderWidgetState extends State<HeaderWidget> {
               padding: const EdgeInsets.symmetric(vertical: 4),
               child: Text(
                 header['secondSubtitle'],
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Theme.of(context).colorScheme.onSurface),
               ),
             ),
           if (header['description'] != null)
@@ -309,7 +306,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                 expandText: S.of(context).Show_More,
                 collapseText: S.of(context).Show_Less,
                 maxLines: isRow ? 3 : 2,
-                style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                style: TextStyle(color: context.subtitleColor),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -327,7 +324,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                       header['playlistId'] != 'LM')
                     AdaptiveFilledButton(
                       shape: const CircleBorder(),
-                      color: Theme.of(context).colorScheme.secondary,
+                      color: greyColor,
                       padding: const EdgeInsets.all(14),
                       onPressed: () => context
                           .read<LibraryService>()
@@ -340,7 +337,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                             ? AdaptiveIcons.library_add_check
                             : AdaptiveIcons.library_add,
                         size: 20,
-                        color: Theme.of(context).colorScheme.onSecondary,
+                        color: context.isDarkMode ? Colors.white : Colors.black,
                       ),
                     ),
                   if (header['videoId'] != null || header['playlistId'] != null)
@@ -357,24 +354,26 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                         borderRadius:
                             BorderRadius.circular(Platform.isWindows ? 8 : 35),
                       ),
-                      color: Theme.of(context).colorScheme.primary,
+                      color: context.isDarkMode ? Colors.white : Colors.black,
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Icon(
                             AdaptiveIcons.play,
-                            color: Theme.of(context).colorScheme.onPrimary,
+                            color: context.isDarkMode
+                                ? Colors.black
+                                : Colors.white,
                             size: 26,
                           ),
                           const SizedBox(width: 8),
-                          Text("Play All", style: TextStyle(fontSize: 18, color: Theme.of(context).colorScheme.onPrimary))
+                          const Text("Play All", style: TextStyle(fontSize: 18))
                         ],
                       ),
                     ),
                   AdaptiveFilledButton(
                     shape: const CircleBorder(),
-                    color: Theme.of(context).colorScheme.secondary,
+                    color: greyColor,
                     padding: const EdgeInsets.all(14),
                     onPressed: () {
                       Modals.showPlaylistBottomModal(context, header);
@@ -382,7 +381,7 @@ class _HeaderWidgetState extends State<HeaderWidget> {
                     child: Icon(
                       AdaptiveIcons.more_vertical,
                       size: 20,
-                      color: Theme.of(context).colorScheme.onSecondary,
+                      color: context.isDarkMode ? Colors.white : Colors.black,
                     ),
                   )
                 ],

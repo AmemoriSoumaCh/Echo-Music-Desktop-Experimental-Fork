@@ -17,7 +17,6 @@ class AppearanceCubit extends Cubit<AppearanceState> {
             accentColor: GetIt.I<SettingsManager>().accentColor,
             amoledBlack: GetIt.I<SettingsManager>().amoledBlack,
             dynamicColors: GetIt.I<SettingsManager>().dynamicColors,
-            frostedGlass: GetIt.I<SettingsManager>().frostedGlass,
           ),
         ) {
     _listener = () {
@@ -38,7 +37,6 @@ class AppearanceCubit extends Cubit<AppearanceState> {
         accentColor: _settings.accentColor,
         amoledBlack: _settings.amoledBlack,
         dynamicColors: _settings.dynamicColors,
-        frostedGlass: _settings.frostedGlass,
       ),
     );
   }
@@ -54,10 +52,6 @@ class AppearanceCubit extends Cubit<AppearanceState> {
 
   void setDynamicColors(bool value) {
     _settings.dynamicColors = value;
-  }
-
-  void setFrostedGlass(bool value) {
-    _settings.frostedGlass = value;
   }
 
   @override

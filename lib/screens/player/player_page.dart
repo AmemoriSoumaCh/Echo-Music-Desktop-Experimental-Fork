@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
-import 'package:Echo/services/settings_manager.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -122,7 +121,6 @@ class _PlayerPageState extends State<PlayerPage> {
       setState(() {
         color = palette.dominantColor?.color;
         paletteColors = extractedColors;
-        GetIt.I<SettingsManager>().accentColor = color;
       });
     }
   }
@@ -145,15 +143,13 @@ class _PlayerPageState extends State<PlayerPage> {
 
   @override
   Widget build(BuildContext context) {
-    SettingsManager settingsManager = SettingsManager();
     return Theme(
       data: darkTheme(
-        isAmoled: settingsManager.amoledBlack
-      ).copyWith(
         colorScheme: ColorScheme.fromSeed(
           seedColor: primaryWhite,
           primary: primaryWhite,
-          brightness: Brightness.dark,),
+          brightness: Brightness.dark,
+        ),
       ),
       child: (widget.videoId != null && fetchedSong == false)
           ? const Center(

@@ -120,9 +120,9 @@ class _HomePageState extends State<_HomePage> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.secondary,
+                color: Colors.grey.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(10)),
-            child: Text(element['title'],style: subtitleTextStyle(color: Theme.of(context).colorScheme.onSecondary),),
+            child: Text(element['title']),
           ),
         ),
       );
@@ -155,6 +155,7 @@ class _HomePageState extends State<_HomePage> {
               'Echo Music',
               style: appBarTitleStyle(),
             ),
+            centerTitle: true,
           ),
         ),
         body: ExpressiveRefreshIndicator(

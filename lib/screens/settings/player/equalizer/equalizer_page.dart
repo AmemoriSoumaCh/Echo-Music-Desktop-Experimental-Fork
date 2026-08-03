@@ -79,7 +79,7 @@ class _EqualizerView extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           S.of(context).Loudness_And_Equalizer,
-          style: mediumTextStyle( bold: false),
+          style: mediumTextStyle(context, bold: false),
         ),
         centerTitle: true,
       ),

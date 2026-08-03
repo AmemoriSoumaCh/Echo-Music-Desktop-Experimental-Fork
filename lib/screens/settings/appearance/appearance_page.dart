@@ -1,6 +1,3 @@
-import 'package:Echo/services/settings_manager.dart';
-import 'package:Echo/themes/colors.dart';
-import 'package:Echo/themes/dark.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -48,7 +45,7 @@ class AppearancePage extends StatelessWidget {
                               (e) => AdaptiveDropdownMenuItem(
                                 value: e,
                                 child: Text(
-                                  e.name.toUpperCase(),style: defaultFontStyle.copyWith(color: AppColors.colorScheme(context).onSurface,),
+                                  e.name.toUpperCase(),
                                 ),
                               ),
                             )
@@ -84,7 +81,7 @@ class AppearancePage extends StatelessWidget {
                         ),
                       ),
                       onTap: () => Modals.showAccentSelector(context),
-                    ),*/
+                    ),
 
                     /// AMOLED
                     SettingSwitchTile(
@@ -97,30 +94,19 @@ class AppearancePage extends StatelessWidget {
                         context.read<AppearanceCubit>().setAmoledBlack(value);
                       },
                     ),
-                    SettingSwitchTile(
-                      title: 'Frosted Glass (Beta)',
-                      leading: const Icon(
-                        Icons.water_drop,
-                      ),
-                      value: s.frostedGlass,
-                      onChanged: (value) {
-                        context.read<AppearanceCubit>().setFrostedGlass(value);
-                      },
-                    ),
 
                     /// Dynamic colors
                     SettingSwitchTile(
                       title: S.of(context).Dynamic_Colors,
-                      isFirst: true,
                       leading: const Icon(
                         Icons.color_lens_outlined,
                       ),
-                      value: s.dynamicColors,
                       isLast: true,
+                      value: s.dynamicColors,
                       onChanged: (value) {
                         context.read<AppearanceCubit>().setDynamicColors(value);
                       },
-                    ),
+                    ), */
                   ],
                 );
               },

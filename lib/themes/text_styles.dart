@@ -2,75 +2,70 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 final defaultFontStyle = GoogleFonts.poppins();
-TextStyle bigTextStyle({Color? color,
-    double opacity = 1, bool bold = true}) {
-  return customTextStyle(
+TextStyle bigTextStyle(BuildContext context,
+    {double opacity = 1, bool bold = true}) {
+  return defaultFontStyle.copyWith(
     fontSize: 30,
-    bold: bold,
-    color: color,
-    opacity: opacity);
+    fontWeight: bold ? FontWeight.w900 : FontWeight.normal,
+    color: Theme.of(context).textTheme.bodyMedium?.color,
+  );
 }
 
-TextStyle mediumTextStyle({Color? color,
-    double opacity = 1, bool bold = true}) {
-  return customTextStyle(
+TextStyle mediumTextStyle(BuildContext context,
+    {double opacity = 1, bool bold = true}) {
+  return defaultFontStyle.copyWith(
     fontSize: 24,
-    bold: bold,
-    color: color,
-    opacity: opacity);
+    fontWeight: bold ? FontWeight.w900 : FontWeight.normal,
+    color: Theme.of(context).textTheme.bodyMedium?.color,
+  );
 }
 
-TextStyle textStyle({Color? color,
-    double opacity = 1, bool bold = true}) {
-  return customTextStyle(
+TextStyle textStyle(BuildContext context,
+    {double opacity = 1, bool bold = true}) {
+  return defaultFontStyle.copyWith(
     fontSize: 19,
-    bold: bold,
-    color: color,
-    opacity: opacity);
+    fontWeight: bold ? FontWeight.w600 : FontWeight.normal,
+    color: Theme.of(context).textTheme.bodyMedium?.color,
+  );
 }
 
-TextStyle subtitleTextStyle({Color? color,
-    double opacity = 1, bool bold = false}) {
-  return customTextStyle(
+TextStyle subtitleTextStyle(BuildContext context,
+    {double opacity = 1, bool bold = false}) {
+  return defaultFontStyle.copyWith(
     fontSize: 15,
-    bold: bold,
-    color: color,
-    opacity: opacity);
+    fontWeight: bold ? FontWeight.w600 : FontWeight.normal,
+    color: Colors.grey.withAlpha(200),
+  );
 }
 
-TextStyle smallTextStyle({Color? color,
-    double opacity = 1, bool bold = false}) {
-  return customTextStyle(
+TextStyle smallTextStyle(BuildContext context,
+    {double opacity = 1, bool bold = false}) {
+  return defaultFontStyle.copyWith(
     fontSize: 13,
-    bold: bold,
-    color: color,
-    opacity: opacity);
+    fontWeight: bold ? FontWeight.w600 : FontWeight.normal,
+    color: Theme.of(context).textTheme.bodyMedium?.color,
+  );
 }
 
-TextStyle tinyTextStyle({Color? color,
-    double opacity = 1, bool bold = false}) {
-  return customTextStyle(
+TextStyle tinyTextStyle(BuildContext context,
+    {double opacity = 1, bool bold = false}) {
+  return defaultFontStyle.copyWith(
     fontSize: 11,
-    bold: bold,
-    color: color,
-    opacity: opacity);
+    fontWeight: bold ? FontWeight.w600 : FontWeight.normal,
+    color: Theme.of(context).textTheme.bodyMedium?.color,
+  );
 }
 
-TextStyle customTextStyle({Color? color,
-    double opacity = 1, bool bold = false, FontWeight weight = FontWeight.normal, double? fontSize, double? height, double? letterSpacing}) {
-    opacity>1?opacity=1:opacity;
+TextStyle customTextStyle(BuildContext context,
+    {double opacity = 1, bool bold = false, double? fontSize}) {
   return defaultFontStyle.copyWith(
       fontSize: fontSize,
-      fontWeight: bold ? FontWeight.w600 : weight,
-      height: height,
-      letterSpacing: letterSpacing,
-      color: color?.withAlpha((opacity*255).round())
-   );
+      fontWeight: bold ? FontWeight.w600 : FontWeight.normal);
 }
 
 TextStyle appBarTitleStyle() {
-  return customTextStyle(
+  return const TextStyle(
     fontSize: 20,
-    bold: true,
+    fontWeight: FontWeight.bold,
   );
 }

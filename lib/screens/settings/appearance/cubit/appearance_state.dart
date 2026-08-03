@@ -10,13 +10,11 @@ class AppearanceLoaded extends AppearanceState {
   final Color? accentColor;
   final bool amoledBlack;
   final bool dynamicColors;
-  final bool frostedGlass;
 
   const AppearanceLoaded({
     required this.themeMode,
     required this.accentColor,
     required this.amoledBlack,
     required this.dynamicColors,
-    required this.frostedGlass,
   });
 }

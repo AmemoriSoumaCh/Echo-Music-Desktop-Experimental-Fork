@@ -1,85 +1,113 @@
-import 'package:Echo/themes/text_styles.dart';
 import 'package:flutter/material.dart';
 
-TextTheme appTextTheme() {
+TextTheme appTextTheme(TextTheme? textTheme) {
+  textTheme ??= ThemeData.light().textTheme;
 
   return TextTheme(
-    displayLarge: customTextStyle(
+    displayLarge: TextStyle(
+      color: textTheme.displayLarge?.color,
+      fontWeight: FontWeight.normal,
       fontSize: 57,
-      bold: false,
-      height: 64/57,
-      letterSpacing: -0.25),
-    displayMedium: customTextStyle(
+      height: 64 / 57,
+      letterSpacing: -0.25,
+    ),
+    displayMedium: TextStyle(
+      color: textTheme.displayMedium?.color,
+      fontWeight: FontWeight.normal,
       fontSize: 45,
-      bold: false,
-      height: 52/45,
-      letterSpacing: 0),
-    displaySmall: customTextStyle(
+      height: 52 / 45,
+      letterSpacing: 0,
+    ),
+    displaySmall: TextStyle(
+      color: textTheme.displaySmall?.color,
+      fontWeight: FontWeight.normal,
       fontSize: 36,
-      bold: false,
-      height: 44/36,
-      letterSpacing: 0),
-    headlineLarge: customTextStyle(
+      height: 44 / 36,
+      letterSpacing: 0,
+    ),
+    headlineLarge: TextStyle(
+      color: textTheme.headlineLarge?.color,
+      fontWeight: FontWeight.normal,
       fontSize: 32,
-      bold: false,
-      height: 40/32,
-      letterSpacing: 0),
-    headlineMedium: customTextStyle(
+      height: 40 / 32,
+      letterSpacing: 0,
+    ),
+    headlineMedium: TextStyle(
+      color: textTheme.headlineMedium?.color,
+      fontWeight: FontWeight.normal,
       fontSize: 28,
-      bold: false,
-      height: 36/28,
-      letterSpacing: 0),
-    headlineSmall: customTextStyle(
+      height: 36 / 28,
+      letterSpacing: 0,
+    ),
+    headlineSmall: TextStyle(
+      color: textTheme.headlineSmall?.color,
+      fontWeight: FontWeight.normal,
       fontSize: 24,
-      bold: false,
-      height: 32/24,
-      letterSpacing: 0),
-    titleLarge: customTextStyle(
+      height: 32 / 24,
+      letterSpacing: 0,
+    ),
+    titleLarge: TextStyle(
+      color: textTheme.titleLarge?.color,
+      fontWeight: FontWeight.normal, // M3 uses normal, M2 used w500
       fontSize: 22,
-      bold: false,
-      height: 28/22,
-      letterSpacing: 0),
-    titleMedium: customTextStyle(
+      height: 28 / 22,
+      letterSpacing: 0,
+    ),
+    titleMedium: TextStyle(
+      color: textTheme.titleMedium?.color,
+      fontWeight: FontWeight.w500,
       fontSize: 16,
-      bold: false,
-      height: 24/16,
-      letterSpacing: 0.15),
-    titleSmall: customTextStyle(
+      height: 24 / 16,
+      letterSpacing: 0.15,
+    ),
+    titleSmall: TextStyle(
+      color: textTheme.titleSmall?.color,
+      fontWeight: FontWeight.w500,
       fontSize: 14,
-      bold: false,
-      height: 20/14,
-      letterSpacing: 0.1),
-    bodyLarge: customTextStyle(
-      fontSize: 16,
-      bold: false,
-      height: 24/16,
-      letterSpacing: 0.5),// M3 uses 0.5, M2 used 0.15
-    bodyMedium: customTextStyle(
-      fontSize: 14, bold: false,
-      height: 20/14,
-      letterSpacing: 0.25),
-    bodySmall: customTextStyle(
-      fontSize: 12,
-      bold: false,
-      height: 16/12,
-      letterSpacing: 0.4),
-    labelLarge: customTextStyle(
-      fontSize: 14,
-      bold: true,
-      height: 20/14,
+      height: 20 / 14,
       letterSpacing: 0.1,
-      opacity: 200/255),
-    labelMedium: customTextStyle(
+    ),
+    bodyLarge: TextStyle(
+      color: textTheme.bodyLarge?.color,
+      fontWeight: FontWeight.normal,
+      fontSize: 16,
+      height: 24 / 16,
+      letterSpacing: 0.5, // M3 uses 0.5, M2 used 0.15
+    ),
+    bodyMedium: TextStyle(
+      color: textTheme.bodyMedium?.color,
+      fontWeight: FontWeight.normal,
+      fontSize: 14,
+      height: 20 / 14,
+      letterSpacing: 0.25,
+    ),
+    bodySmall: TextStyle(
+      color: textTheme.bodySmall?.color,
+      fontWeight: FontWeight.normal,
       fontSize: 12,
-      weight: FontWeight.w500,
-      height: 16/12,
+      height: 16 / 12,
+      letterSpacing: 0.4,
+    ),
+    labelLarge: TextStyle(
+      color: textTheme.labelLarge?.color?.withAlpha(200),
+      fontWeight: FontWeight.w600,
+      fontSize: 14,
+      height: 20 / 14,
+      letterSpacing: 0.1,
+    ),
+    labelMedium: TextStyle(
+      color: textTheme.labelMedium?.color?.withAlpha(200),
+      fontWeight: FontWeight.w500,
+      fontSize: 12,
+      height: 16 / 12,
       letterSpacing: 0.5,
-      opacity: 200/255),
-    labelSmall: customTextStyle(
+    ),
+    labelSmall: TextStyle(
+      color: textTheme.labelSmall?.color?.withAlpha(200),
+      fontWeight: FontWeight.w500,
       fontSize: 11,
-      weight: FontWeight.w500,
-      height: 16/11,
+      height: 16 / 11,
       letterSpacing: 0.5,
-      opacity: 200/255),
+    ),
   );
 }
