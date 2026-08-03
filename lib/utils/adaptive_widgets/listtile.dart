@@ -46,15 +46,15 @@ class AdaptiveListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final TextStyle titleStyle = mediumTextStyle(context, bold: false).copyWith(
+    final TextStyle titleStyle = mediumTextStyle( bold: false).copyWith(
       fontSize: dense ? 14.0 : 16.0,
     );
 
-    final TextStyle subtitleStyle = subtitleTextStyle(context).copyWith(
+    final TextStyle subtitleStyle = subtitleTextStyle().copyWith(
       fontSize: dense ? 12.0 : 14.0,
     );
 
-    final TextStyle descriptionStyle = smallTextStyle(context).copyWith(
+    final TextStyle descriptionStyle = smallTextStyle().copyWith(
       fontSize: dense ? 12.0 : 14.0,
     );
 

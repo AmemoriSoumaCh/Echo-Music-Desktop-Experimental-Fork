@@ -1,3 +1,5 @@
+import 'package:Echo/themes/colors.dart';
+import 'package:Echo/themes/typography.dart';
 import 'package:flutter/material.dart';
 import 'package:palette_generator/palette_generator.dart';
 
@@ -62,16 +64,8 @@ class _BottomPlayerState extends State<BottomPlayer> {
               child: Container(
                 margin: const EdgeInsets.only(bottom: 10),
                 decoration: BoxDecoration(
-                  color: (backgroundColor ?? const Color(0xFF202020)).withAlpha(255),
+                  color: (backgroundColor ?? AppColors.floatingPlayer(context)),
                   borderRadius: BorderRadius.circular(50),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.3),
-                      blurRadius: 20,
-                      spreadRadius: 2,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(50),
@@ -108,10 +102,9 @@ class _BottomPlayerState extends State<BottomPlayer> {
                                         currentSong.title,
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
+                                        style: appTextTheme().bodyMedium?.copyWith(
                                           fontWeight: FontWeight.bold,
-                                          fontSize: 14,
-                                          color: Colors.white,
+                                          color: AppColors.onFloatingPlayer(context),
                                         ),
                                       ),
                                       if (currentSong.artist != null ||
@@ -123,10 +116,9 @@ class _BottomPlayerState extends State<BottomPlayer> {
                                                   .extras!['subtitle'],
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color:
-                                                Colors.white.withValues(alpha: 0.8),
+                                          style: appTextTheme().bodySmall?.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                            color: AppColors.onFloatingPlayer(context).withValues(alpha: 0.8),
                                           ),
                                         ),
                                     ],
@@ -152,10 +144,10 @@ class _BottomPlayerState extends State<BottomPlayer> {
                                           .player
                                           .seekToPrevious();
                                     },
-                                    icon: const Icon(
+                                    icon: Icon(
                                       Icons.skip_previous,
                                       size: 24,
-                                      color: Colors.white,
+                                      color: AppColors.onFloatingPlayer(context),
                                     ),
                                   );
                                 },
@@ -189,7 +181,7 @@ class _BottomPlayerState extends State<BottomPlayer> {
                                                 ? Icons.pause
                                                 : Icons.play_arrow,
                                             size: 30, // Slightly smaller play button
-                                            color: Colors.white,
+                                            color: AppColors.onFloatingPlayer(context),
                                           ),
                                         );
                                 },
@@ -207,10 +199,10 @@ class _BottomPlayerState extends State<BottomPlayer> {
                                           .player
                                           .seekToNext();
                                     },
-                                    icon: const Icon(
+                                    icon: Icon(
                                       Icons.skip_next,
                                       size: 24,
-                                      color: Colors.white,
+                                      color: AppColors.onFloatingPlayer(context),
                                     ),
                                   );
                                 },

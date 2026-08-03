@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:Echo/themes/text_styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -103,33 +104,37 @@ class _SearchPageState extends State<_SearchPage> {
                                   builder: (context, controller, focusNode) {
                                     _textEditingController = controller;
                                     _focusNode = focusNode;
-                                    return AdaptiveTextField(
+                                    return TextField(
                                       focusNode: _focusNode,
                                       controller: _textEditingController,
+                                      style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onSecondary),
                                       onSubmitted: onSubmit,
                                       keyboardType: TextInputType.text,
                                       maxLines: 1,
                                       autofocus: true,
                                       textInputAction: TextInputAction.search,
-                                      fillColor:
-                                          Colors.grey.withValues(alpha: 0.3),
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              vertical: 12, horizontal: 16),
-                                      borderRadius:
-                                          BorderRadius.circular(35),
-                                      hintText: S.of(context).Search_Echo,
-                                      prefix: constraints.maxWidth > 400
+                                      decoration: InputDecoration(
+                                          fillColor: Theme.of(context).colorScheme.secondary,
+                                          filled: true,
+                                          contentPadding: const EdgeInsets.symmetric(
+                                          vertical: 12, horizontal: 16),
+                                          border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(35)),
+                                          hintText: S.of(context).Search_Echo,
+                                          hintStyle: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onSecondary),
+                                          prefix: constraints.maxWidth > 400
                                           ? null
                                           : const AdaptiveBackButton(),
-                                      suffix: GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            _textEditingController?.text = '';
-                                          });
-                                        },
-                                        child: const Icon(CupertinoIcons.clear),
+                                          suffix: GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                _textEditingController?.text = '';
+                                              });
+                                            },
+                                          child: Icon(CupertinoIcons.clear, color: Theme.of(context).colorScheme.onSecondary),
+                                        ),
                                       ),
+
                                     );
                                   },
                                   decorationBuilder: null,
@@ -137,18 +142,19 @@ class _SearchPageState extends State<_SearchPage> {
                                     if (value['type'] == 'TEXT') {
                                       return AdaptiveListTile(
                                           leading: value['isHistory'] != null
-                                              ? const Icon(Icons.history)
+                                              ? Icon(Icons.history, color: Theme.of(context).colorScheme.onSecondary,)
                                               : null,
-                                          title: Text(value['query']),
+                                          title: Text(value['query'], style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onSecondary),),
                                           onTap: () {
                                             setState(() {
                                               _textEditingController?.text =
                                                   value['query'];
                                             });
                                             onSubmit(value['query']);
-                                          });
+                                          },
+                                          backgroundColor: Theme.of(context).colorScheme.secondary,);
                                     }
-                                    return _SearchListTile(item: value);
+                                    return _SearchSuggestionListTile(item: value);
                                   },
                                   onSelected: (value) => (),
                                 ),
@@ -224,7 +230,7 @@ class _SearchSectionItem extends StatelessWidget {
                 const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
             title: Text(
               section['title'],
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: customTextStyle(fontSize: 20, weight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface),
             ),
             trailing: section['trailing']?['text'] != null
                 ? Padding(
@@ -242,7 +248,7 @@ class _SearchSectionItem extends StatelessWidget {
                         },
                         child: Text(
                           section['trailing']['text'],
-                          style: const TextStyle(fontSize: 12),
+                          style: customTextStyle(fontSize: 12),
                         )),
                   )
                 : null,
@@ -255,14 +261,16 @@ class _SearchSectionItem extends StatelessWidget {
   }
 }
 
-class _SearchListTile extends StatelessWidget {
-  const _SearchListTile({
+class _SearchSuggestionListTile extends StatelessWidget {
+  const _SearchSuggestionListTile({
     required this.item,
   });
   final Map item;
+
   @override
   Widget build(BuildContext context) {
     return AdaptiveListTile(
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       onSecondaryTap: () {
         if (item['videoId'] != null) {
           Modals.showSongBottomModal(context, item);
@@ -294,12 +302,80 @@ class _SearchListTile extends StatelessWidget {
         item['title'],
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
+        style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onSecondary),
+      ),
+      subtitle: item['subtitle'] != null
+      ? Text(
+        item['subtitle'],
+        maxLines: 1,
+        style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onTertiary.withValues(alpha: 0.7)),
+        overflow: TextOverflow.ellipsis,
+      )
+      : null,
+      leading: item['thumbnails'] != null && item['thumbnails'].isNotEmpty
+      ? ClipRRect(
+        borderRadius: BorderRadius.circular(
+          ['ARTIST', 'PROFILE'].contains(item['type']) ? 30 : 3),
+          child: Image.network(
+            item['thumbnails'].first['url'],
+            width: 50,
+          ))
+      : null,
+      trailing: item['videoId'] == null && item['endpoint'] != null
+      ? const Icon(CupertinoIcons.chevron_right)
+      : null,
+    );
+  }
+}
+
+class _SearchListTile extends StatelessWidget {
+  const _SearchListTile({
+    required this.item,
+  });
+  final Map item;
+
+  @override
+  Widget build(BuildContext context) {
+    return AdaptiveListTile(
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
+      onSecondaryTap: () {
+        if (item['videoId'] != null) {
+          Modals.showSongBottomModal(context, item);
+        } else if (item['endpoint'] != null) {
+          Modals.showPlaylistBottomModal(context, item);
+        }
+      },
+      onTap: () async {
+        if (item['videoId'] != null) {
+          await GetIt.I<MediaPlayer>().playSong(Map.from(item));
+        } else if (item['endpoint'] != null && item['videoId'] == null) {
+          context.push(
+            '/browse',
+            extra: {
+              'endpoint': item['endpoint'],
+            },
+          );
+        }
+      },
+      onLongPress: () {
+        if (item['videoId'] != null) {
+          Modals.showSongBottomModal(context, item);
+        } else if (item['endpoint'] != null) {
+          Modals.showPlaylistBottomModal(context, item);
+        }
+      },
+      dense: false,
+      title: Text(
+        item['title'],
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface),
       ),
       subtitle: item['subtitle'] != null
           ? Text(
               item['subtitle'],
               maxLines: 1,
-              style: TextStyle(color: Colors.grey.withValues(alpha: 0.9)),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7)),
               overflow: TextOverflow.ellipsis,
             )
           : null,

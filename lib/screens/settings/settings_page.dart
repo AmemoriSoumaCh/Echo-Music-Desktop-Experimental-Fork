@@ -143,7 +143,7 @@ class _BatteryWarningTile extends StatelessWidget {
       ),
       subtitle: Text(
         S.of(context).Battery_Optimisation_message,
-        style: tinyTextStyle(context).copyWith(
+        style: tinyTextStyle().copyWith(
           color: Theme.of(context)
               .colorScheme
               .onErrorContainer

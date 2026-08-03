@@ -75,17 +75,17 @@ class _SectionItemState extends State<SectionItem> {
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                   title: widget.section['strapline'] == null
                       ? Text(widget.section['title'] ?? '',
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 20))
+                          style: customTextStyle(
+                              weight: FontWeight.bold, fontSize: 20, color: Theme.of(context).colorScheme.onSurface))
                       : Text(
                           widget.section['strapline'],
-                          style: TextStyle(
-                              color: Colors.grey.withAlpha(200), fontSize: 14),
+                          style: customTextStyle(
+                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), fontSize: 14),
                         ),
                   subtitle: widget.section['strapline'] != null
                       ? Text(widget.section['title'] ?? '',
                           style:
-                              mediumTextStyle(context).copyWith(fontSize: 20))
+                              mediumTextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8)).copyWith(fontSize: 20))
                       : null,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -318,7 +318,7 @@ class SongTile extends StatelessWidget {
             Modals.showSongBottomModal(context, song);
           }
         },
-        title: Text(song['title'] ?? "", maxLines: 1),
+        title: Text(song['title'] ?? "", maxLines: 1,style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface),),
         leading: ClipRRect(
           borderRadius: BorderRadius.circular(3),
           child: CachedNetworkImage(
@@ -347,7 +347,7 @@ class SongTile extends StatelessWidget {
               child: Text(
                 _buildSubtitle(song),
                 maxLines: 1,
-                style: TextStyle(color: Colors.grey.withOpacity(0.9)),
+                style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -366,7 +366,7 @@ class SongTile extends StatelessWidget {
                       expandText: S.of(context).Show_More,
                       collapseText: S.of(context).Show_Less,
                       maxLines: 3,
-                      style: TextStyle(color: context.subtitleColor),
+                      style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                     ),
                   ],
                 ),
@@ -417,7 +417,7 @@ class _ItemListState extends State<ItemList> {
             return Adaptivecard(
               elevation: 0,
               borderRadius: BorderRadius.circular(8),
-              backgroundColor: Platform.isAndroid ? Colors.transparent : null,
+              backgroundColor: Theme.of(context).colorScheme.surfaceContainerLowest,
               padding: EdgeInsets.zero,
               child: AdaptiveInkWell(
                 padding: EdgeInsets.all(Platform.isWindows ? 12 : 0),
@@ -461,7 +461,7 @@ class _ItemListState extends State<ItemList> {
                       width: width,
                       height: height,
                       decoration: BoxDecoration(
-                        color: Colors.grey.withOpacity(0.1),
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
                         borderRadius: widget.items[index]['type'] == 'ARTIST'
                             ? BorderRadius.circular(height / 2)
                             : BorderRadius.circular(8),
@@ -490,7 +490,7 @@ class _ItemListState extends State<ItemList> {
                                     .toString()
                                     .breakWord,
                                 maxLines: 2,
-                                style: const TextStyle(height: 1.3),
+                                style: TextStyle(height: 1.3, color: Theme.of(context).colorScheme.onSurface),
                                 overflow: TextOverflow.ellipsis,
                                 softWrap: true,
                               ),
@@ -503,7 +503,7 @@ class _ItemListState extends State<ItemList> {
                                       child: Icon(
                                         Icons.explicit,
                                         size: 14,
-                                        color: Colors.grey.withOpacity(0.9),
+                                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                                       ),
                                     ),
                                   if (subtitle != null)
@@ -512,7 +512,7 @@ class _ItemListState extends State<ItemList> {
                                           maxLines: 1,
                                           style: TextStyle(
                                               color:
-                                                  Colors.grey.withOpacity(0.9),
+                                                  Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                                               fontSize: 13,
                                               height: 1.2),
                                           overflow: TextOverflow.ellipsis),

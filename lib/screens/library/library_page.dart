@@ -203,7 +203,7 @@ class _LibraryGridCard extends StatelessWidget {
             child: Container(
               width: double.infinity,
               decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.1),
+                color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.9),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: _buildImage(context),
@@ -233,7 +233,7 @@ class _LibraryGridCard extends StatelessWidget {
       return Icon(
         item['icon'],
         size: 40,
-        color: Theme.of(context).iconTheme.color,
+        color: Theme.of(context).colorScheme.onSecondary,
       );
     }
     
@@ -261,6 +261,6 @@ class _LibraryGridCard extends StatelessWidget {
       }
     }
 
-    return const Icon(CupertinoIcons.music_note_list, size: 40);
+    return Icon(CupertinoIcons.music_note_list, size: 40, color: Theme.of(context).colorScheme.onSecondary,);
   }
 }
