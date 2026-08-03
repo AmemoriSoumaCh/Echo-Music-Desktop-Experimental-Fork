@@ -27,10 +27,13 @@ class SettingsManager extends ChangeNotifier {
   Color? _accentColor;
   bool _amoledBlack = true;
   bool _dynamicColors = false;
+  bool _frostedGlass = false;
   bool _equalizerEnabled = false;
   List<double> _equalizerBandsGain = [];
   bool _loudnessEnabled = false;
   double _loudnessTargetGain = 0.0;
+  double _volumeLevel = 1.0;
+  double _speedLevel = 1.0;
 
   ThemeMode get themeMode => _themeMode;
   List<ThemeMode> get themeModes => _themeModes;
@@ -47,10 +50,13 @@ class SettingsManager extends ChangeNotifier {
   Color? get accentColor => _accentColor;
   bool get amoledBlack => _amoledBlack;
   bool get dynamicColors => _dynamicColors;
+  bool get frostedGlass => _frostedGlass;
   bool get equalizerEnabled => _equalizerEnabled;
   List<double> get equalizerBandsGain => _equalizerBandsGain;
   bool get loudnessEnabled => _loudnessEnabled;
   double get loudnessTargetGain => _loudnessTargetGain;
+  double get volumeLevel => _volumeLevel;
+  double get speedLevel => _speedLevel;
 
   Map get settings => _box.toMap();
   SettingsManager() {
@@ -66,6 +72,7 @@ class SettingsManager extends ChangeNotifier {
         : null;
     _amoledBlack = _box.get('AMOLED_BLACK', defaultValue: true);
     _dynamicColors = _box.get('DYNAMIC_COLORS', defaultValue: false);
+    _frostedGlass = _box.get('FROSTED_GLASS', defaultValue: false);
 
     _location = _countries.firstWhere((country) =>
         country['value'] == _box.get('LOCATION', defaultValue: 'IN'));
@@ -80,6 +87,8 @@ class SettingsManager extends ChangeNotifier {
     _loudnessTargetGain = _box.get('LOUDNESS_TARGET_GAIN', defaultValue: 0.0);
     _equalizerBandsGain =
         _box.get('EQUALIZER_BANDS_GAIN', defaultValue: []).cast<double>();
+    _volumeLevel = _box.get('VOLUME_LEVEL', defaultValue: 1.0);
+    _speedLevel = _box.get('SPEED_LEVEL', defaultValue: 1.0);
   }
 
   setThemeMode(ThemeMode mode) async {
@@ -140,6 +149,13 @@ class SettingsManager extends ChangeNotifier {
     notifyListeners();
   }
 
+  set frostedGlass(bool val)
+  {
+    _box.put('FROSTED_GLASS', val);
+    _frostedGlass = val;
+    notifyListeners();
+  }
+
   set dynamicColors(bool isMaterial) {
     _box.put('DYNAMIC_COLORS', isMaterial);
     _dynamicColors = isMaterial;
@@ -158,6 +174,22 @@ class SettingsManager extends ChangeNotifier {
       _equalizerBandsGain = value;
       notifyListeners();
     }
+  }
+
+  set volumeLevel(double value)
+  {
+    if(value<0) value=0;
+    _box.put('VOLUME_LEVEL', value);
+    _volumeLevel = value;
+    notifyListeners();
+  }
+
+  set speedLevel(double value)
+  {
+    if(value<0) value=0;
+    _box.put('SPEED_LEVEL', value);
+    _speedLevel = value;
+    notifyListeners();
   }
 
   Future<void> setEqualizerBandsGain(int index, double value) async {

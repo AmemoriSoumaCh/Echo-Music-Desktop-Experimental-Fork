@@ -171,7 +171,10 @@ List<StatefulShellBranch> branches = [
         path: '/settings',
         builder: (context, state) => const SettingsPage(),
         routes: [
-
+          GoRoute(
+            path: 'appearance',
+            builder: (context, state) => const AppearancePage(),
+          ),
           GoRoute(
             path: 'appearance',
             builder: (context, state) => const AppearancePage(),

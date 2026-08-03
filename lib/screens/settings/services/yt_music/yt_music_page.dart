@@ -47,7 +47,7 @@ class YTMusicPage extends StatelessWidget {
                                   value: l,
                                   child: Text(
                                     l['name']!.trim(),
-                                    style: smallTextStyle(context),
+                                    style: smallTextStyle(),
                                   ),
                                 ),
                               )
@@ -71,7 +71,7 @@ class YTMusicPage extends StatelessWidget {
                                 value: l,
                                 child: Text(
                                   l['name']!.trim(),
-                                  style: smallTextStyle(context),
+                                  style: smallTextStyle(),
                                 ),
                               ),
                             )
@@ -113,7 +113,7 @@ class YTMusicPage extends StatelessWidget {
                                 value: e,
                                 child: Text(
                                   e.name.toUpperCase(),
-                                  style: smallTextStyle(context),
+                                  style: smallTextStyle(),
                                 ),
                               ),
                             )
@@ -135,7 +135,7 @@ class YTMusicPage extends StatelessWidget {
                                 value: e,
                                 child: Text(
                                   e.name.toUpperCase(),
-                                  style: smallTextStyle(context),
+                                  style: smallTextStyle(),
                                 ),
                               ),
                             )
