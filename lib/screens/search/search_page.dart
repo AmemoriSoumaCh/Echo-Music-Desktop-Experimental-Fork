@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:Echo/themes/colors.dart';
 import 'package:Echo/themes/text_styles.dart';
+import 'package:Echo/themes/typography.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -107,21 +109,21 @@ class _SearchPageState extends State<_SearchPage> {
                                     return TextField(
                                       focusNode: _focusNode,
                                       controller: _textEditingController,
-                                      style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onSecondary),
+                                      style: appTextTheme().titleMedium?.copyWith(color: AppColors.onSearchBar(context)),
                                       onSubmitted: onSubmit,
                                       keyboardType: TextInputType.text,
                                       maxLines: 1,
                                       autofocus: true,
                                       textInputAction: TextInputAction.search,
                                       decoration: InputDecoration(
-                                          fillColor: Theme.of(context).colorScheme.secondary,
+                                          fillColor: AppColors.searchBar(context),
                                           filled: true,
                                           contentPadding: const EdgeInsets.symmetric(
                                           vertical: 12, horizontal: 16),
                                           border: OutlineInputBorder(
                                               borderRadius: BorderRadius.circular(35)),
                                           hintText: S.of(context).Search_Echo,
-                                          hintStyle: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onSecondary),
+                                          hintStyle: appTextTheme().titleMedium?.copyWith(color: AppColors.onSearchBar(context)),
                                           prefix: constraints.maxWidth > 400
                                           ? null
                                           : const AdaptiveBackButton(),
@@ -131,10 +133,9 @@ class _SearchPageState extends State<_SearchPage> {
                                                 _textEditingController?.text = '';
                                               });
                                             },
-                                          child: Icon(CupertinoIcons.clear, color: Theme.of(context).colorScheme.onSecondary),
-                                        ),
+                                          child: Icon(CupertinoIcons.clear, color: AppColors.onSearchBar(context),),
                                       ),
-
+                                     ),
                                     );
                                   },
                                   decorationBuilder: null,

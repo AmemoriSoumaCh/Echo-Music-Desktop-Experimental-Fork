@@ -40,6 +40,26 @@ class AppColors
   {
     return Theme.of(context).colorScheme;
   }
+  static Color outline(BuildContext context)
+  {
+    return colorScheme(context).outline;
+  }
+  static Color subtitleColor(BuildContext context)
+  {
+    return colorScheme(context).onSurface.withAlpha(150);
+  }
+  static Color titleColor(BuildContext context)
+  {
+    return colorScheme(context).onSurface;
+  }
+  static Color onSearchBar(BuildContext context)
+  {
+    return colorScheme(context).onSecondary;
+  }
+  static Color searchBar(BuildContext context)
+  {
+    return colorScheme(context).secondary;
+  }
   static Color shadow(BuildContext context)
   {
     return colorScheme(context).primary;
@@ -82,10 +102,11 @@ class AppColors
   }
   static Color floatingPlayer(BuildContext context)
   {
-    return colorScheme(context).surfaceContainerHighest;
+    return colorScheme(context).primary;
   }
   static Color onFloatingPlayer(BuildContext context)
   {
-    return colorScheme(context).onSurface;
+    return colorScheme(context).secondary;
   }
+
 }

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:Echo/themes/colors.dart';
 import 'package:flutter/material.dart';
 
 import '../../themes/text_styles.dart';
@@ -47,15 +48,15 @@ class AdaptiveListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final TextStyle titleStyle = mediumTextStyle( bold: false).copyWith(
-      fontSize: dense ? 14.0 : 16.0,
+      fontSize: dense ? 14.0 : 16.0,color: AppColors.titleColor(context),
     );
 
     final TextStyle subtitleStyle = subtitleTextStyle().copyWith(
-      fontSize: dense ? 12.0 : 14.0,
+      fontSize: dense ? 12.0 : 14.0,color: AppColors.subtitleColor(context)
     );
 
     final TextStyle descriptionStyle = smallTextStyle().copyWith(
-      fontSize: dense ? 12.0 : 14.0,
+      fontSize: dense ? 12.0 : 14.0,color: AppColors.subtitleColor(context)
     );
 
     return Container(
@@ -76,7 +77,7 @@ class AdaptiveListTile extends StatelessWidget {
                   const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
               decoration: BoxDecoration(
                 color: selected
-                    ? theme.colorScheme.primary.withOpacity(0.1)
+                    ? theme.colorScheme.primary.withValues(alpha: 0.1)
                     : backgroundColor,
               ),
               child: Column(

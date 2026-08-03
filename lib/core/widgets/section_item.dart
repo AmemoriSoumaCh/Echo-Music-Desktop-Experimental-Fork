@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:Echo/themes/colors.dart';
+import 'package:Echo/themes/typography.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:expandable_text/expandable_text.dart';
@@ -8,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:Echo/ytmusic/ytmusic.dart';
+import 'package:Echo/core/widgets/premium_surface.dart';
 
 import '../../generated/l10n.dart';
 import '../../services/bottom_message.dart';
@@ -50,8 +53,8 @@ class _SectionItemState extends State<SectionItem> {
         loadingMore = true;
       });
       GetIt.I<YTMusic>()
-          .getMoreItems(continuation: widget.section['continuation'])
-          .then((value) {
+      .getMoreItems(continuation: widget.section['continuation'])
+      .then((value) {
         setState(() {
           widget.section['contents'].addAll(value['items']);
           widget.section['continuation'] = value['continuation'];
@@ -64,134 +67,154 @@ class _SectionItemState extends State<SectionItem> {
   @override
   Widget build(BuildContext context) {
     horizontalPageController = PageController(
-        viewportFraction: 350 / MediaQuery.of(context).size.width);
+      viewportFraction: 350 / MediaQuery.of(context).size.width,
+    );
+    final mediaPlayer = GetIt.I<MediaPlayer>();
     return widget.section['contents'].isEmpty
-        ? const SizedBox()
-        : Column(
-            children: [
-              if (widget.section['title'] != null)
-                AdaptiveListTile(
-                  contentPadding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                  title: widget.section['strapline'] == null
-                      ? Text(widget.section['title'] ?? '',
-                          style: customTextStyle(
-                              weight: FontWeight.bold, fontSize: 20, color: Theme.of(context).colorScheme.onSurface))
-                      : Text(
-                          widget.section['strapline'],
-                          style: customTextStyle(
-                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), fontSize: 14),
-                        ),
-                  subtitle: widget.section['strapline'] != null
-                      ? Text(widget.section['title'] ?? '',
-                          style:
-                              mediumTextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8)).copyWith(fontSize: 20))
-                      : null,
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (widget.section['trailing'] != null)
-                        AdaptiveOutlinedButton(
-                          onPressed: () async {
-                            if (widget.section['trailing']['playable'] ==
-                                    false &&
-                                widget.section['trailing']['endpoint'] !=
-                                    null) {
-                              context.push(
-                                '/browse',
-                                extra: {
-                                  'endpoint': widget.section['trailing']
-                                      ['endpoint'],
-                                  'isMore': true,
-                                },
+    ? const SizedBox()
+    : PremiumSurface(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.fromLTRB(8, 4, 8, 12),
+      borderRadius: BorderRadius.circular(24),
+      child: Column(
+        children: [
+          if (widget.section['title'] != null)
+            AdaptiveListTile(
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 8,
+                horizontal: 8,
+              ),
+              title: widget.section['strapline'] == null
+              ? Text(
+                widget.section['title'] ?? '',
+                style: appTextTheme().titleMedium) :
+                Text(widget.section['strapline'],
+                style: appTextTheme().titleSmall?.copyWith(color: AppColors.onWindow(context).withAlpha(200)),
+              ),
+              subtitle: widget.section['strapline'] != null
+              ? Text(
+                widget.section['title'] ?? '',
+                style: appTextTheme().titleMedium?.copyWith(color: AppColors.onWindow(context)),
+              )
+              : null,
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (widget.section['trailing'] != null)
+                    AdaptiveOutlinedButton(
+                      onPressed: () async {
+                        if (widget.section['trailing']['playable'] ==
+                          false &&
+                          widget.section['trailing']['endpoint'] !=
+                          null) {
+                          context.push(
+                            '/browse',
+                            extra: {
+                              'endpoint':
+                              widget.section['trailing']['endpoint'],
+                              'isMore': true,
+                            },
+                          );
+                          } else {
+                            BottomMessage.showText(
+                              context,
+                              S.of(context).Songs_Will_Start_Playing_Soon,
+                            );
+                            if (widget.section['trailing']['endpoint'] !=
+                              null) {
+                              await mediaPlayer
+                              .startPlaylistSongs(
+                                widget.section['trailing']['endpoint'],
                               );
-                            } else {
-                              BottomMessage.showText(context,
-                                  S.of(context).Songs_Will_Start_Playing_Soon);
-                              if (widget.section['trailing']['endpoint'] !=
-                                  null) {
-                                await GetIt.I<MediaPlayer>().startPlaylistSongs(
-                                    widget.section['trailing']['endpoint']);
                               } else {
-                                await GetIt.I<MediaPlayer>()
-                                    .playAll(widget.section['contents']);
+                                await mediaPlayer.playAll(
+                                  widget.section['contents'],
+                                );
                               }
-                            }
-                          },
-                          child: Text(widget.section['trailing']['text']),
-                        ),
-                      if (Platform.isWindows &&
-                          widget.section['viewType'] != 'SINGLE_COLUMN')
-                        AdaptiveIconButton(
-                          icon: Icon(AdaptiveIcons.chevron_left),
-                          onPressed: () {
-                            if (widget.section['viewType'] == 'COLUMN' &&
-                                !widget.isMore) {
-                              horizontalPageController.previousPage(
-                                  duration: const Duration(milliseconds: 300),
-                                  curve: Curves.easeOut);
+                          }
+                      },
+                      child: Text(widget.section['trailing']['text']),
+                    ),
+                    if (Platform.isWindows &&
+                      widget.section['viewType'] != 'SINGLE_COLUMN')
+                      AdaptiveIconButton(
+                        icon: Icon(AdaptiveIcons.chevron_left),
+                        onPressed: () {
+                          if (widget.section['viewType'] == 'COLUMN' &&
+                            !widget.isMore) {
+                            horizontalPageController.previousPage(
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeOut,
+                            );
                             } else {
                               horizontalScrollController.animateTo(
                                 horizontalScrollController.offset -
-                                    horizontalScrollController
-                                        .position.extentInside,
+                                horizontalScrollController
+                                .position
+                                .extentInside,
                                 duration: const Duration(milliseconds: 300),
                                 curve: Curves.easeOut,
                               );
                             }
-                          },
-                        ),
+                        },
+                      ),
                       if (Platform.isWindows &&
-                          widget.section['viewType'] != 'SINGLE_COLUMN')
+                        widget.section['viewType'] != 'SINGLE_COLUMN')
                         AdaptiveIconButton(
                           icon: Icon(AdaptiveIcons.chevron_right),
                           onPressed: () {
                             if (widget.section['viewType'] == 'COLUMN' &&
-                                !widget.isMore) {
+                              !widget.isMore) {
                               horizontalPageController.nextPage(
-                                  duration: const Duration(milliseconds: 300),
-                                  curve: Curves.easeOut);
-                            } else {
-                              horizontalScrollController.animateTo(
-                                horizontalScrollController.offset +
-                                    horizontalScrollController
-                                        .position.extentInside,
                                 duration: const Duration(milliseconds: 300),
                                 curve: Curves.easeOut,
                               );
-                            }
+                              } else {
+                                horizontalScrollController.animateTo(
+                                  horizontalScrollController.offset +
+                                  horizontalScrollController
+                                  .position
+                                  .extentInside,
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.easeOut,
+                                );
+                              }
                           },
-                        )
-                    ],
-                  ),
-                  leading: widget.section['thumbnails'] != null &&
-                          widget.section['thumbnails']?.isNotEmpty
-                      ? CircleAvatar(
-                          backgroundImage: CachedNetworkImageProvider(
-                            widget.section['thumbnails'].first['url'],
-                          ),
-                        )
-                      : null,
+                        ),
+                ],
+              ),
+              leading:
+              widget.section['thumbnails'] != null &&
+              widget.section['thumbnails']?.isNotEmpty
+              ? CircleAvatar(
+                backgroundImage: CachedNetworkImageProvider(
+                  widget.section['thumbnails'].first['url'],
                 ),
-              if (widget.section['viewType'] == 'COLUMN' && !widget.isMore)
-                SongList(
-                  songs: widget.section['contents'],
-                  controller: horizontalPageController,
-                )
+              )
+              : null,
+            ),
+            if (widget.section['viewType'] == 'COLUMN' && !widget.isMore)
+              SongList(
+                songs: widget.section['contents'],
+                controller: horizontalPageController,
+              )
               else if (widget.section['viewType'] == 'SINGLE_COLUMN' ||
-                  widget.isMore)
+                widget.isMore)
                 SingleColumnList(songs: widget.section['contents'])
-              else
-                ItemList(
-                  items: widget.section['contents'],
-                  controller: horizontalScrollController,
-                ),
-              if (loadingMore) const AdaptiveProgressRing(),
-              if (widget.section['continuation'] != null && !loadingMore)
-                AdaptiveButton(
-                    onPressed: loadMoreItems, child: const Text("Load More"))
-            ],
-          );
+                else
+                  ItemList(
+                    items: widget.section['contents'],
+                    controller: horizontalScrollController,
+                  ),
+                  if (loadingMore) const AdaptiveProgressRing(),
+                    if (widget.section['continuation'] != null && !loadingMore)
+                      AdaptiveButton(
+                        onPressed: loadMoreItems,
+                        child: const Text("Load More"),
+                      ),
+        ],
+      ),
+    );
   }
 }
 
@@ -230,10 +253,11 @@ class _SongListState extends State<SongList> {
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Column(
             children: widget.songs
-                .sublist(start, min(end, widget.songs.length))
-                .map((pageSongs) {
+            .sublist(start, min(end, widget.songs.length))
+            .map((pageSongs) {
               return SongTile(song: pageSongs);
-            }).toList(),
+            })
+            .toList(),
           ),
         );
       },
@@ -255,123 +279,129 @@ class SingleColumnList extends StatelessWidget {
 }
 
 class SongTile extends StatelessWidget {
-  const SongTile({required this.song, this.playlistId, this.onTap, super.key});
+  SongTile({required this.song, this.playlistId, this.onTap, super.key});
   final String? playlistId;
   final Map song;
   final VoidCallback? onTap;
+  final mediaPlayer = GetIt.I<MediaPlayer>();
 
   @override
   Widget build(BuildContext context) {
     List thumbnails = song['thumbnails'];
     double height =
-        (song['aspectRatio'] != null ? 50 / song['aspectRatio'] : 50)
-            .toDouble();
+    (song['aspectRatio'] != null ? 50 / song['aspectRatio'] : 50)
+    .toDouble();
     return AdaptiveListTile(
-        // borderRadius: BorderRadius.circular(5),
-        // focusColor: greyColor,
-        onTap: onTap ?? () async {
-          if (song['endpoint'] != null && song['videoId'] == null) {
-            context.push(
-              '/browse',
-              extra: {
-                'endpoint': song['endpoint'],
-              },
+      // borderRadius: BorderRadius.circular(5),
+      // focusColor: greyColor,
+      onTap:
+      onTap ??
+      () async {
+        if (song['endpoint'] != null && song['videoId'] == null) {
+          context.push('/browse', extra: {'endpoint': song['endpoint']});
+        } else if (song['isChart'] == true) {
+          // Handle Chart Item Click - Search and Play
+          BottomMessage.showText(
+            context,
+            "Searching and playing ${song['title']}...",
+          );
+          // Using ImportService logic or Queue logic to find and play
+          // Ideally we move the "find and play" logic to a shared PlayService.
+          // For now, we replicate or find a way.
+          // We can use GetIt.I<YTMusic>().search(query) then play first result.
+          final query = "${song['title']} ${song['subtitle'] ?? ''}";
+          try {
+            final result = await GetIt.I<YTMusic>().search(
+              query,
+              filter: 'songs',
             );
-          } else if (song['isChart'] == true) {
-             // Handle Chart Item Click - Search and Play
-             BottomMessage.showText(context, "Searching and playing ${song['title']}...");
-             // Using ImportService logic or Queue logic to find and play
-             // Ideally we move the "find and play" logic to a shared PlayService.
-             // For now, we replicate or find a way.
-             // We can use GetIt.I<YTMusic>().search(query) then play first result.
-             final query = "${song['title']} ${song['subtitle'] ?? ''}";
-             try {
-                 final result = await GetIt.I<YTMusic>().search(query, filter: 'songs');
-                 if (result['sections'] != null && (result['sections'] as List).isNotEmpty) {
-                    final section = result['sections'][0];
-                    if (section['contents'] != null && (section['contents'] as List).isNotEmpty) {
-                       final match = section['contents'][0];
-                       await GetIt.I<MediaPlayer>().playSong(Map.from(match));
-                    } else {
-                        BottomMessage.showText(context, "Song not found");
-                    }
-                 }
-             } catch (e) {
-                 BottomMessage.showText(context, "Error playing song");
-             }
+            if (result['sections'] != null &&
+              (result['sections'] as List).isNotEmpty) {
+              final section = result['sections'][0];
+            if (section['contents'] != null &&
+              (section['contents'] as List).isNotEmpty) {
+              final match = section['contents'][0];
+            await mediaPlayer.playSong(Map.from(match));
+              } else {
+                BottomMessage.showText(context, "Song not found");
+              }
+              }
+          } catch (e) {
+            BottomMessage.showText(context, "Error playing song");
+          }
+        } else {
+          await mediaPlayer.playSong(Map.from(song));
 
-          } else {
-            await GetIt.I<MediaPlayer>().playSong(Map.from(song));
-
-            // final s = GetIt.I<HttpServer>();
-            // await get(Uri.parse(
-            //     'http://${s.address.host}:${s.port}/stream?videoId=${song['videoId']}'));
-          }
-        },
-        onSecondaryTap: () {
-          if (song['videoId'] != null) {
-            Modals.showSongBottomModal(context, song);
-          }
-        },
-        onLongPress: () {
-          if (song['videoId'] != null) {
-            Modals.showSongBottomModal(context, song);
-          }
-        },
-        title: Text(song['title'] ?? "", maxLines: 1,style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface),),
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(3),
-          child: CachedNetworkImage(
-            imageUrl: thumbnails
-                .where((el) => el['width'] >= 50)
-                .toList()
-                .first['url'],
-            height: height,
-            width: 50,
-            fit: BoxFit.cover,
-          ),
+          // final s = GetIt.I<HttpServer>();
+          // await get(Uri.parse(
+          //     'http://${s.address.host}:${s.port}/stream?videoId=${song['videoId']}'));
+        }
+      },
+      onSecondaryTap: () {
+        if (song['videoId'] != null) {
+          Modals.showSongBottomModal(context, song);
+        }
+      },
+      onLongPress: () {
+        if (song['videoId'] != null) {
+          Modals.showSongBottomModal(context, song);
+        }
+      },
+      title: Text(song['title'] ?? "", maxLines: 1, style: appTextTheme().titleMedium?.copyWith(color: AppColors.titleColor(context))),
+      leading: ClipRRect(
+        borderRadius: BorderRadius.circular(3),
+        child: CachedNetworkImage(
+          imageUrl: thumbnails
+          .where((el) => el['width'] >= 50)
+          .toList()
+          .first['url'],
+          height: height,
+          width: 50,
+          fit: BoxFit.cover,
         ),
-        subtitle: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            if (song['explicit'] == true)
-              Padding(
-                padding: const EdgeInsets.only(right: 2),
-                child: Icon(
-                  Icons.explicit,
-                  size: 18,
-                  color: Colors.grey.withOpacity(0.9),
-                ),
+      ),
+      subtitle: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          if (song['explicit'] == true)
+            Padding(
+              padding: const EdgeInsets.only(right: 2),
+              child: Icon(
+                Icons.explicit,
+                size: 18,
+                color: AppColors.subtitleColor(context),
               ),
+            ),
             Expanded(
               child: Text(
                 _buildSubtitle(song),
                 maxLines: 1,
-                style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)),
+                style: appTextTheme().labelMedium?.copyWith(color: AppColors.subtitleColor(context)),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
+        ],
+      ),
+      trailing: song['endpoint'] != null && song['videoId'] == null
+      ? Icon(AdaptiveIcons.chevron_right)
+      : null,
+      description: (song['type'] == 'EPISODE' && song['description'] != null)
+      ? Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Column(
+          children: [
+            ExpandableText(
+              song['description'].split('\n')?[0] ?? '',
+              expandText: S.of(context).Show_More,
+              collapseText: S.of(context).Show_Less,
+              maxLines: 3,
+              style: TextStyle(color: AppColors.subtitleColor(context)),
+            ),
           ],
         ),
-        trailing: song['endpoint'] != null && song['videoId'] == null
-            ? Icon(AdaptiveIcons.chevron_right)
-            : null,
-        description: (song['type'] == 'EPISODE' && song['description'] != null)
-            ? Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Column(
-                  children: [
-                    ExpandableText(
-                      song['description'].split('\n')?[0] ?? '',
-                      expandText: S.of(context).Show_More,
-                      collapseText: S.of(context).Show_Less,
-                      maxLines: 3,
-                      style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-                    ),
-                  ],
-                ),
-              )
-            : null);
+      )
+      : null,
+    );
   }
 
   String _buildSubtitle(Map item) {
@@ -402,138 +432,150 @@ class ItemList extends StatefulWidget {
 class _ItemListState extends State<ItemList> {
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      double height = constraints.maxWidth > 600 ? 200 : 150;
+    final mediaPlayer = GetIt.I<MediaPlayer>();
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        double height = constraints.maxWidth > 600 ? 200 : 150;
 
-      return SizedBox(
-        height: height + (Platform.isWindows ? 102 : 78),
-        child: ListView.separated(
-          controller: widget.controller,
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-          scrollDirection: Axis.horizontal,
-          itemBuilder: (context, index) {
-            double width = height * (widget.items[index]?['aspectRatio'] ?? 1);
-            String? subtitle = _buildSubtitle(widget.items[index]);
-            return Adaptivecard(
-              elevation: 0,
-              borderRadius: BorderRadius.circular(8),
-              backgroundColor: Theme.of(context).colorScheme.surfaceContainerLowest,
-              padding: EdgeInsets.zero,
-              child: AdaptiveInkWell(
-                padding: EdgeInsets.all(Platform.isWindows ? 12 : 0),
-                onTap: () async {
-                  if (widget.items[index]['chartUrl'] != null) {
-                    context.push('/chart_details',
-                        extra: widget.items[index]['chartUrl']);
-                  } else if (widget.items[index]['endpoint'] != null &&
-                      widget.items[index]['videoId'] == null) {
-                    context.push(
-                      '/browse',
-                      extra: {
-                        'endpoint': widget.items[index]['endpoint'],
-                      },
-                    );
-                  } else {
-                    await GetIt.I<MediaPlayer>()
-                        .playSong(Map.from(widget.items[index]));
-                  }
-                },
-                onSecondaryTap: () {
-                  if (widget.items[index]['videoId'] != null) {
-                    Modals.showSongBottomModal(context, widget.items[index]);
-                  } else if (widget.items[index]['playlistId'] != null) {
-                    Modals.showPlaylistBottomModal(
-                        context, widget.items[index]);
-                  }
-                },
-                onLongPress: () {
-                  if (widget.items[index]['videoId'] != null) {
-                    Modals.showSongBottomModal(context, widget.items[index]);
-                  } else if (widget.items[index]['playlistId'] != null) {
-                    Modals.showPlaylistBottomModal(
-                        context, widget.items[index]);
-                  }
-                },
+        return SizedBox(
+          height: height + (Platform.isWindows ? 102 : 78),
+          child: ListView.separated(
+            controller: widget.controller,
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) {
+              double width =
+              height * (widget.items[index]?['aspectRatio'] ?? 1);
+              String? subtitle = _buildSubtitle(widget.items[index]);
+              return Adaptivecard(
+                elevation: 0,
                 borderRadius: BorderRadius.circular(8),
-                child: Column(
-                  children: [
-                    Ink(
-                      width: width,
-                      height: height,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
-                        borderRadius: widget.items[index]['type'] == 'ARTIST'
-                            ? BorderRadius.circular(height / 2)
-                            : BorderRadius.circular(8),
+                backgroundColor: Platform.isAndroid ? Colors.transparent : null,
+                padding: EdgeInsets.zero,
+                child: AdaptiveInkWell(
+                  padding: EdgeInsets.all(Platform.isWindows ? 12 : 0),
+                  onTap: () async {
+                    if (widget.items[index]['chartUrl'] != null) {
+                      context.push(
+                        '/chart_details',
+                        extra: widget.items[index]['chartUrl'],
+                      );
+                    } else if (widget.items[index]['endpoint'] != null &&
+                      widget.items[index]['videoId'] == null) {
+                      context.push(
+                        '/browse',
+                        extra: {'endpoint': widget.items[index]['endpoint']},
+                      );
+                      } else {
+                        await mediaPlayer.playSong(
+                          Map.from(widget.items[index]),
+                        );
+                      }
+                  },
+                  onSecondaryTap: () {
+                    if (widget.items[index]['videoId'] != null) {
+                      Modals.showSongBottomModal(context, widget.items[index]);
+                    } else if (widget.items[index]['playlistId'] != null) {
+                      Modals.showPlaylistBottomModal(
+                        context,
+                        widget.items[index],
+                      );
+                    }
+                  },
+                  onLongPress: () {
+                    if (widget.items[index]['videoId'] != null) {
+                      Modals.showSongBottomModal(context, widget.items[index]);
+                    } else if (widget.items[index]['playlistId'] != null) {
+                      Modals.showPlaylistBottomModal(
+                        context,
+                        widget.items[index],
+                      );
+                    }
+                  },
+                  borderRadius: BorderRadius.circular(8),
+                  child: Column(
+                    children: [
+                      Ink(
+                        width: width,
+                        height: height,
+                        decoration: BoxDecoration(
+                          color: AppColors.outline(context).withValues(alpha: 0.1),
+                          borderRadius: widget.items[index]['type'] == 'ARTIST'
+                        ? BorderRadius.circular(height / 2)
+                        : BorderRadius.circular(8),
                         image: DecorationImage(
                           fit: BoxFit.cover,
                           image: CachedNetworkImageProvider(
                             getEnhancedImage(
-                                widget.items[index]['thumbnails'].first['url'],
-                                dp: MediaQuery.of(context).devicePixelRatio,
-                                width: width),
+                              widget.items[index]['thumbnails'].first['url'],
+                              dp: MediaQuery.of(context).devicePixelRatio,
+                              width: width,
+                            ),
+                          ),
+                        ),
+                        ),
+                      ),
+                      Expanded(
+                        child: SizedBox(
+                          width: width,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              AdaptiveListTile(
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 0,
+                                  vertical: 4,
+                                ),
+                                title: Text(
+                                  widget.items[index]['title']
+                                  .toString()
+                                  .breakWord,
+                                  maxLines: 2,
+                                  style: appTextTheme().titleMedium?.copyWith(color: AppColors.titleColor(context)),
+                                  overflow: TextOverflow.ellipsis,
+                                  softWrap: true,
+                                ),
+                                subtitle: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    if (widget.items[index]['explicit'] == true)
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          right: 2,
+                                        ),
+                                        child: Icon(
+                                          Icons.explicit,
+                                          size: 14,
+                                          color: AppColors.subtitleColor(context),
+                                        ),
+                                      ),
+                                      if (subtitle != null)
+                                        Expanded(
+                                          child: Text(
+                                            subtitle,
+                                            maxLines: 1,
+                                            style: appTextTheme().titleSmall?.copyWith(color: AppColors.subtitleColor(context)),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      child: SizedBox(
-                        width: width,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            AdaptiveListTile(
-                              contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 0, vertical: 4),
-                              title: Text(
-                                widget.items[index]['title']
-                                    .toString()
-                                    .breakWord,
-                                maxLines: 2,
-                                style: TextStyle(height: 1.3, color: Theme.of(context).colorScheme.onSurface),
-                                overflow: TextOverflow.ellipsis,
-                                softWrap: true,
-                              ),
-                              subtitle: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  if (widget.items[index]['explicit'] == true)
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 2),
-                                      child: Icon(
-                                        Icons.explicit,
-                                        size: 14,
-                                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-                                      ),
-                                    ),
-                                  if (subtitle != null)
-                                    Expanded(
-                                      child: Text(subtitle,
-                                          maxLines: 1,
-                                          style: TextStyle(
-                                              color:
-                                                  Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
-                                              fontSize: 13,
-                                              height: 1.2),
-                                          overflow: TextOverflow.ellipsis),
-                                    ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },
-          separatorBuilder: (context, index) => const SizedBox(width: 8),
-          itemCount: widget.items.length,
-        ),
-      );
-    });
+              );
+            },
+            separatorBuilder: (context, index) => const SizedBox(width: 8),
+            itemCount: widget.items.length,
+          ),
+        );
+      },
+    );
   }
 
   String? _buildSubtitle(Map item) {

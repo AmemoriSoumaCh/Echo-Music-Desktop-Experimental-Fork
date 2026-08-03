@@ -21,11 +21,22 @@ class SearchCubit extends Cubit<SearchState> {
         await Hive.box('SEARCH_HISTORY').delete(query.toLowerCase());
         await Hive.box('SEARCH_HISTORY').put(query.toLowerCase(), query);
       }
-      final feed = await _ytmusic.search(query, endpoint: endpoint);
-      emit(SearchSuccess(
+      final String queryLower = query.toLowerCase();
+      final String? searchFilter = (queryLower.contains('8d') || queryLower.contains('remix')) ? 'videos' : null;
+
+      final feed = await _ytmusic.search(
+        query,
+        filter: searchFilter,
+        endpoint: endpoint,
+      );
+
+      emit(
+        SearchSuccess(
           sections: feed['sections'],
           continuation: feed['continuation'],
-          loadingMore: false));
+          loadingMore: false,
+        ),
+      );
     } catch (e, st) {
       print(e);
       print(st);
