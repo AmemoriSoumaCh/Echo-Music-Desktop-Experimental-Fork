@@ -44,6 +44,7 @@ class _BottomPlayerState extends State<BottomPlayer> {
   @override
   Widget build(BuildContext context) {
     final mediaPlayer = GetIt.I<MediaPlayer>();
+    final player = mediaPlayer.player;
     return StreamBuilder(
         stream: mediaPlayer.currentTrackStream,
         builder: (
@@ -140,9 +141,7 @@ class _BottomPlayerState extends State<BottomPlayer> {
                                 builder: (context, snapshot) {
                                   return AdaptiveIconButton(
                                     onPressed: () {
-                                      GetIt.I<MediaPlayer>()
-                                          .player
-                                          .seekToPrevious();
+                                      player.seekToPrevious();
                                     },
                                     icon: Icon(
                                       Icons.skip_previous,
@@ -165,15 +164,9 @@ class _BottomPlayerState extends State<BottomPlayer> {
                                         )
                                       : AdaptiveIconButton(
                                           onPressed: () {
-                                            GetIt.I<MediaPlayer>()
-                                                    .player
-                                                    .playing
-                                                ? GetIt.I<MediaPlayer>()
-                                                    .player
-                                                    .pause()
-                                                : GetIt.I<MediaPlayer>()
-                                                    .player
-                                                    .play();
+                                            player.playing
+                                                ? player.pause()
+                                                : player.play();
                                           },
                                           icon: Icon(
                                             buttonState ==
@@ -195,9 +188,7 @@ class _BottomPlayerState extends State<BottomPlayer> {
                                 builder: (context, snapshot) {
                                   return AdaptiveIconButton(
                                     onPressed: () {
-                                      GetIt.I<MediaPlayer>()
-                                          .player
-                                          .seekToNext();
+                                    player.seekToNext();
                                     },
                                     icon: Icon(
                                       Icons.skip_next,

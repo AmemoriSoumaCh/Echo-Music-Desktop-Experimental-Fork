@@ -86,6 +86,6 @@ class AppColors
   }
   static Color onFloatingPlayer(BuildContext context)
   {
-    return colorScheme(context).surface;
+    return colorScheme(context).onSurface;
   }
 }
