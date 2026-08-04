@@ -27,18 +27,7 @@ class _BottomPlayerState extends State<BottomPlayer> {
 
 
   void updateBackgroundColor(ImageProvider image) async {
-    final palette = await PaletteGenerator.fromImageProvider(
-      image,
-      maximumColorCount: 20,
-    );
-    if (mounted) {
-      if (palette.dominantColor != null &&
-          backgroundColor != palette.dominantColor!.color) {
-        setState(() {
-          backgroundColor = palette.dominantColor!.color;
-        });
-      }
-    }
+    backgroundColor = AppColors.floatingPlayer(context);
   }
 
   @override
@@ -65,7 +54,7 @@ class _BottomPlayerState extends State<BottomPlayer> {
               child: Container(
                 margin: const EdgeInsets.only(bottom: 10),
                 decoration: BoxDecoration(
-                  color: (backgroundColor ?? AppColors.floatingPlayer(context)),
+                  color: backgroundColor,
                   borderRadius: BorderRadius.circular(50),
                 ),
                 child: ClipRRect(

@@ -82,10 +82,10 @@ class AppColors
   }
   static Color floatingPlayer(BuildContext context)
   {
-    return colorScheme(context).surfaceContainerHighest;
+    return colorScheme(context).primary;
   }
   static Color onFloatingPlayer(BuildContext context)
   {
-    return colorScheme(context).onSurface;
+    return colorScheme(context).onPrimary;
   }
 }

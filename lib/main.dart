@@ -60,7 +60,7 @@ void main() async {
 
   await FileStorage.initialise();
   FileStorage fileStorage = FileStorage();
-  SettingsManager settingsManager = SettingsManager();
+  final settingsManager = SettingsManager();
 
   GetIt.I.registerSingleton<SettingsManager>(settingsManager);
 
@@ -101,7 +101,7 @@ class Echo extends StatelessWidget {
   const Echo({super.key});
   @override
   Widget build(BuildContext context) {
-    SettingsManager settingsManager = SettingsManager();
+    final settingsManager = SettingsManager();
     return Shortcuts(
       shortcuts: <LogicalKeySet, Intent>{
         LogicalKeySet(LogicalKeyboardKey.select): const ActivateIntent(),
@@ -119,15 +119,12 @@ class Echo extends StatelessWidget {
         supportedLocales: S.delegate.supportedLocales,
         debugShowCheckedModeBanner: false,
         themeMode: context.watch<SettingsManager>().themeMode,
-        theme: settingsManager.dynamicColors?
-        AppTheme.dynamic(seedColor: settingsManager.accentColor??Colors.red):
-        AppTheme.light(),
-        darkTheme: settingsManager.dynamicColors?
-        AppTheme.dynamic(seedColor: settingsManager.accentColor??Colors.red, brightness: Brightness.dark, isAmoled: settingsManager.amoledBlack):
-        AppTheme.dark(isAmoled: settingsManager.amoledBlack),
+        theme: AppTheme.light(seedColor: settingsManager.accentColor),
+        darkTheme: AppTheme.dark(seedColor: settingsManager.accentColor, isAmoled:  settingsManager.amoledBlack),
         ),
     );
   }
+
 }
 
 Future<void> initialiseHive() async {

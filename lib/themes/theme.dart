@@ -4,17 +4,26 @@ import 'package:flutter/material.dart';
 import 'package:Echo/themes/dark.dart';
 
 class AppTheme {
-  static ThemeData dynamic({Color? seedColor, Brightness? brightness, bool? isAmoled})
-  {
-    return dynamicTheme(seedColor: seedColor??Colors.white, brightness: brightness??Brightness.light, isAmoled: isAmoled??false);
+
+  static ThemeData light({Color? seedColor}) {
+    if(seedColor!=null)
+    {
+      return dynamicTheme(seedColor: seedColor, brightness: Brightness.light, isAmoled: false);
+    }
+    else
+    {
+      return lightTheme();
+    }
   }
 
-  static ThemeData light() {
-    return lightTheme();
+  static ThemeData dark({Color? seedColor, bool? isAmoled}) {
+    if(seedColor!=null)
+    {
+      return dynamicTheme(seedColor: seedColor, brightness: Brightness.dark, isAmoled: isAmoled??false);
+    }
+    else
+    {
+      return darkTheme(isAmoled: isAmoled??false);
+    }
   }
-
-  static ThemeData dark({bool? isAmoled}) {
-    return darkTheme(isAmoled: isAmoled??false);
-  }
-
 }
