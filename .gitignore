@@ -23,3 +23,6 @@ Thumbs.db
 *.g.dart
 *.freezed.dart
 *.mocks.dart
+linux/packaging/appimagetool-build.sh
+/linux/packaging/appimage
+/dist
